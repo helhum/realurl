@@ -1218,11 +1218,10 @@ class UriGeneratorAndResolver implements SingletonInterface {
 			elseif (isset($this->pObj->orig_paramKeyValues[$this->conf['languageGetVar']])) {
 				$lang = intval($this->pObj->orig_paramKeyValues[$this->conf['languageGetVar']]);
 			}
-
-			// Might be excepted (like you should for CJK cases which does not translate to ASCII equivalents)
-			if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->conf['languageExceptionUids'], $lang)) {
-				$lang = intval($GLOBALS['TSFE']->config['config']['sys_language_uid']);
-			}
+		}
+		// Might be excepted (like you should for CJK cases which does not translate to ASCII equivalents)
+		if (isset($this->conf['languageExceptionUids']) && \TYPO3\CMS\Core\Utility\GeneralUtility::inList($this->conf['languageExceptionUids'], $lang)) {
+			$lang = 0;
 		}
 
 		return $lang;
