@@ -1,4 +1,6 @@
 <?php
+namespace Tx\Realurl\Hooks;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -26,16 +28,17 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+
 /**
  * Class for creating and parsing Speaking Urls
  * This class interfaces with hooks in TYPO3 inside tslib_fe (for parsing speaking URLs to GET parameters) and in t3lib_tstemplate (for parsing GET parameters into a speaking URL)
  *
- * @author	Kasper Skaarhoj <kasper@typo3.com>
- * @author	Dmitry Dulepov <dmitry@typo3.org>
- * @package TYPO3
- * @subpackage tx_realurl
+ * @author Kasper Skaarhoj <kasper@typo3.com>
+ * @author Dmitry Dulepov <dmitry@typo3.org>
  */
-class tx_realurl {
+class UrlRewritingHook implements SingletonInterface {
 
 	// External, static
 	var $NA = '-'; // Substitute value for "blank" values
@@ -46,7 +49,7 @@ class tx_realurl {
 
 
 	// Internal
-	/** @var tslib_fe */
+	/** @var TypoScriptFrontendController */
 	var $pObj; // tslib_fe / GLOBALS['TSFE'] (for ->decodeSpURL())
 	var $extConf; // Configuration for extension, from $TYPO3_CONF_VARS['EXTCONF']['realurl']
 	var $adminJumpSet = FALSE; // Is set true (->encodeSpURL) if AdminJump is active in some way. Is set false again when captured first time!

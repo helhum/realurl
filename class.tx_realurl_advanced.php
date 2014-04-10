@@ -47,7 +47,7 @@ class tx_realurl_advanced {
 	/**
 	 * Reference to parent object
 	 *
-	 * @var	tx_realurl
+	 * @var	\Tx\Realurl\Hooks\UrlRewritingHook
 	 */
 	protected $pObj;
 
@@ -70,12 +70,10 @@ class tx_realurl_advanced {
 	 * Based on the "mode" key in the $params array it branches out to either decode or encode functions.
 	 *
 	 * @param array $params Parameters passed from parent object, "tx_realurl". Some values are passed by reference! (paramKeyValues, pathParts and pObj)
-	 * @param tx_realurl $parent Copy of parent object. Not used.
+	 * @param \Tx\Realurl\Hooks\UrlRewritingHook $parent Copy of parent object. Not used.
 	 * @return mixed Depends on branching.
 	 */
-	public function main(array $params, tx_realurl $parent) {
-		/* @var $ref tx_realurl */
-
+	public function main(array $params, \Tx\Realurl\Hooks\UrlRewritingHook $parent) {
 		// Setting internal variables
 		$this->pObj = $parent;
 		$this->conf = $params['conf'];
