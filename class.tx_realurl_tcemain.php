@@ -24,9 +24,6 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/**
- * $Id$
- */
 
 /**
  * TCEmain hook to update various caches when data is modified in TYPO3 Backend

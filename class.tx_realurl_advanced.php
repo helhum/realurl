@@ -25,15 +25,6 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-/**
- * Class for translating page ids to/from path strings (Speaking URLs)
- *
- * $Id$
- *
- * @author	Martin Poelstra <martin@beryllium.net>
- * @author	Kasper Skaarhoj <kasper@typo3.com>
- * @author	Dmitry Dulepov <dmitry@typo3.org>
- */
 
 /**
  * Class for translating page ids to/from path strings (Speaking URLs)

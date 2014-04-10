@@ -4,7 +4,7 @@
 		<description>CSH for additional pages fields</description>
 		<type>CSH</type>
 		<csh_table>tt_content</csh_table>
-		<fileId>EXT:realurl/locallang_csh.xml</fileId>
+		<fileId>EXT:realurl/Resources/Private/Language/locallang_csh.xml</fileId>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">

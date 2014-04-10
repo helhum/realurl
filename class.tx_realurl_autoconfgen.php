@@ -24,28 +24,6 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
-/**
- * Class for translating page ids to/from path strings (Speaking URLs)
- *
- * $Id: class.tx_realurl_advanced.php 5893 2007-07-09 13:41:07Z liels_bugs $
- *
- * @author	Dmitry Dulepov <dmitry@typo3.org>
- */
-/**
- * [CLASS/FUNCTION INDEX of SCRIPT]
- *
- *
- *
- *   57: class tx_realurl_autoconfgen
- *   68:     function generateConfiguration()
- *   89:     function doGenerateConfiguration(&$fd)
- *  151:     function getTemplate()
- *  209:     function addLanguages(&$conf)
- *
- * TOTAL FUNCTIONS: 4
- * (This index is automatically created/updated by the extension "extdeveval")
- *
- */
 
 /**
  * Class for generating of automatic RealURL configuration

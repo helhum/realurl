@@ -25,8 +25,6 @@
 /**
  * Class for updating RealURL data
  *
- * $Id$
- *
  * @author  Dmitry Dulepov <dmitry.dulepov@typo3.org>
  * @package TYPO3
  * @subpackage realurl

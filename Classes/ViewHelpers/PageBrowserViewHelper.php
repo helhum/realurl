@@ -1,40 +1,36 @@
 <?php
+namespace Tx\Realurl\ViewHelpers;
+
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2009 Dmitry Dulepov (dmitry.dulepov@gmail.com)
-*  All rights reserved
-*
-*  This script is part of the Typo3 project. The Typo3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
-/**
- * $Id$
+ *  Copyright notice
  *
+ *  (c) 2004-2005 Kasper Skaarhoj (kasperYYYY@typo3.com)
+ *  (c) 2005-2010 Dmitry Dulepov (dmitry@typo3.org)
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
+
+/**
+ * This class is a page browser for the RealURL backend module.
+ *
+ * @author Dmitry Dulepov <dmitry.dulepov@gmail.com>
  */
-
- /**
-  * This class is a page browser for the RealURL backend module.
-  *
-  * @author Dmitry Dulepov <dmitry.dulepov@gmail.com>
-  * @package TYPO3
-  * @subpackage tx_realurl
-  */
-class tx_realurl_pagebrowser {
-
+class PageBrowserViewHelper {
 	const PAGES_BEFORE = 1;
 	const PAGES_BEFORE_END = 1;
 	const PAGES_AFTER = 1;
@@ -91,6 +87,7 @@ class tx_realurl_pagebrowser {
 	}
 
 	protected function generatePageBrowser() {
+		$markup = '';
 		for ($page = 1; $page <= min($this->totalPages, $this->currentPage, self::PAGES_AFTER_START + 1); $page++) {
 			$markup .= $this->createCell($page);
 		}
@@ -117,6 +114,7 @@ class tx_realurl_pagebrowser {
 	}
 
 	protected function createCell($pageNumber) {
+		$extraClass = '';
 		if ($pageNumber != $this->currentPage) {
 			$link = array(
 				'<a href="' . $this->baseURL . '&amp;page=' . $pageNumber . '">',
@@ -140,4 +138,4 @@ class tx_realurl_pagebrowser {
 			(($totalResults % $this->resultsPerPage) != 0 ? 1 : 0);
 	}
 
-}
+} 

@@ -25,14 +25,6 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-/**
- * Class for creating and parsing Speaking Urls
- *
- * $Id$
- *
- * @author	Kasper Skaarhoj <kasper@typo3.com>
- * @author	Dmitry Dulepov <dmitry@typo3.org>
- */
 
 /**
  * Class for creating and parsing Speaking Urls
