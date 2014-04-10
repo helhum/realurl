@@ -269,7 +269,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 
 						// Init:
 					$deletedEntry = FALSE;
-					$hash = $inf['pagepath'].'|'.$inf['rootpage_id'].'|'.$inf['language_id'];	// MP is not a part of this because the path itself should be different simply because the MP makes a different path! (see tx_realurl_advanced::pagePathtoID())
+					$hash = $inf['pagepath'].'|'.$inf['rootpage_id'].'|'.$inf['language_id'];	// MP is not a part of this because the path itself should be different simply because the MP makes a different path! (see UriGeneratorAndResolver::pagePathtoID())
 
 						// Add icon/title and ID:
 					$tCells = array();

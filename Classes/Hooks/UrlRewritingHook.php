@@ -60,7 +60,7 @@ class UrlRewritingHook implements SingletonInterface {
 	var $appendedSlash = false; // Set true if slash is appended
 	var $encodePageId = 0; // Set with the page id during encoding. for internal use only.
 	var $speakingURIpath_procValue = ''; // For decoding, the path we are processing.
-	var $disableDecodeCache = FALSE; // If set internally, decode caching is disabled. Used when a 303 header is set in tx_realurl_advanced.
+	var $disableDecodeCache = FALSE; // If set internally, decode caching is disabled. Used when a 303 header is set in UriGeneratorAndResolver.
 
 
 	var $decode_editInBackend = FALSE; // If set (in adminjump function) then we will redirect to edit the found page id in the backend.
@@ -312,7 +312,7 @@ class UrlRewritingHook implements SingletonInterface {
 	 * This method gets called by the typoLink_PostProc hook in tslib_content:
 	 *
 	 * @param array $parameters Array of parameters from typoLink_PostProc hook in tslib_content
-	 * @param tslib_cObj $pObj Reference to the calling tslib_content instance
+	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $pObj Reference to the calling tslib_content instance
 	 * @return void
 	 */
 	public function encodeSpURL_urlPrepend(&$parameters, &$pObj) {
@@ -2109,7 +2109,7 @@ class UrlRewritingHook implements SingletonInterface {
 
 	/**
 	 * Clean up the alias
-	 * (Almost the same function as encodeTitle() in class.tx_realurl_advanced.php)
+	 * (Almost the same function as encodeTitle() in UriGeneratorAndResolver)
 	 *
 	 * @param array $cfg Configuration array
 	 * @param string $newAliasValue Alias value to clean up

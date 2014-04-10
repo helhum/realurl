@@ -152,7 +152,7 @@ class ConfigurationGenerator {
 			),
 			'pagePath' => array(
 				'type' => 'user',
-				'userFunc' => 'EXT:realurl/class.tx_realurl_advanced.php:&tx_realurl_advanced->main',
+				'userFunc' => 'Tx\\Realurl\\UriGeneratorAndResolver->main',
 				'spaceCharacter' => '-',
 				'languageGetVar' => 'L',
 			),

@@ -1,4 +1,6 @@
 <?php
+namespace Tx\Realurl;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -26,19 +28,19 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\SingletonInterface;
+
 /**
  * Class for translating page ids to/from path strings (Speaking URLs)
  *
- * @author	Martin Poelstra <martin@beryllium.net>
- * @author	Kasper Skaarhoj <kasper@typo3.com>
- * @author	Dmitry Dulepov <dmitry@typo3.org>
- * @package realurl
- * @subpackage tx_realurl
+ * @author Martin Poelstra <martin@beryllium.net>
+ * @author Kasper Skaarhoj <kasper@typo3.com>
+ * @author Dmitry Dulepov <dmitry@typo3.org>
  */
-class tx_realurl_advanced {
+class UriGeneratorAndResolver implements SingletonInterface {
 
 	/**
-	 * t3lib_page object for finding rootline on the fly
+	 * PageRepository object for finding rootline on the fly
 	 *
 	 * @var	\TYPO3\CMS\Frontend\Page\PageRepository
 	 */
@@ -47,7 +49,7 @@ class tx_realurl_advanced {
 	/**
 	 * Reference to parent object
 	 *
-	 * @var	\Tx\Realurl\Hooks\UrlRewritingHook
+	 * @var \Tx\Realurl\Hooks\UrlRewritingHook
 	 */
 	protected $pObj;
 
