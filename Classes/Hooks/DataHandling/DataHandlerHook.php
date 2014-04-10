@@ -1,4 +1,6 @@
 <?php
+namespace Tx\Realurl\Hooks\DataHandling;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -30,7 +32,7 @@
  *
  * @author	Dmitry Dulepov <dmitry@typo3.org>
  */
-class tx_realurl_tcemain {
+class DataHandlerHook {
 
 	/**
 	 * RealURL configuration for the current host
@@ -352,9 +354,3 @@ class tx_realurl_tcemain {
 	}
 
 }
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/realurl/class.tx_realurl_tcemain.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/realurl/class.tx_realurl_tcemain.php']);
-}
-
-?>

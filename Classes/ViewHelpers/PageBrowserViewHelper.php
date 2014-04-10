@@ -137,5 +137,4 @@ class PageBrowserViewHelper {
 		$this->totalPages = intval($totalResults/$this->resultsPerPage) +
 			(($totalResults % $this->resultsPerPage) != 0 ? 1 : 0);
 	}
-
-} 
+}
