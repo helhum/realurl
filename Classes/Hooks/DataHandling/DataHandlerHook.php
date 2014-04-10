@@ -27,12 +27,15 @@ namespace Tx\Realurl\Hooks\DataHandling;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
+use Tx\Realurl\Configuration\ConfigurationGenerator;
+use TYPO3\CMS\Core\SingletonInterface;
+
 /**
  * TCEmain hook to update various caches when data is modified in TYPO3 Backend
  *
  * @author	Dmitry Dulepov <dmitry@typo3.org>
  */
-class DataHandlerHook {
+class DataHandlerHook implements SingletonInterface {
 
 	/**
 	 * RealURL configuration for the current host
@@ -49,7 +52,7 @@ class DataHandlerHook {
 	 */
 	protected function clearAutoConfiguration($tableName) {
 		if ($tableName == 'sys_domain') {
-			@unlink(PATH_site . TX_REALURL_AUTOCONF_FILE);
+			@unlink(PATH_site . ConfigurationGenerator::AUTOCONFIGURTION_FILE);
 		}
 	}
 
@@ -309,6 +312,26 @@ class DataHandlerHook {
 	public function processDatamap_afterDatabaseOperations($status, $tableName, $recordId, array $databaseData) {
 		$this->processContentUpdates($status, $tableName, $recordId, $databaseData);
 		$this->clearAutoConfiguration($tableName);
+	}
+
+	/**
+	 * Hook function for clearing page cache
+	 *
+	 * @param array $params Params for hook
+	 * @return void
+	 */
+	public function clearPageRelatedUrlCaches($params) {
+		$pageIdArray = $params['table'] == 'pages' ? array($params['uid']) : $params['pageIdArray'];
+		if (is_array($pageIdArray) && count($pageIdArray) > 0) {
+			/** @noinspection PhpUndefinedMethodInspection */
+			$pageIdList = implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($pageIdArray));
+			/** @noinspection PhpUndefinedMethodInspection */
+			$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_realurl_urlencodecache', 'page_id IN (' . $pageIdList . ')');
+			/** @noinspection PhpUndefinedMethodInspection */
+			$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_realurl_urldecodecache', 'page_id IN (' . $pageIdList . ')');
+			/** @noinspection PhpUndefinedMethodInspection */
+			$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_realurl_pathcache', 'page_id IN (' . $pageIdList . ') AND expire>0 AND expire<=' . time());
+		}
 	}
 
 	/**

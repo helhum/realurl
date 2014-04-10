@@ -2483,32 +2483,6 @@ class tx_realurl {
 		return $result;
 	}
 
-	/**********************************
-	 *
-	 * External Hooks
-	 *
-	 **********************************/
-
-	/**
-	 * Hook function for clearing page cache
-	 *
-	 * @param array $params Params for hook
-	 * @return void
-	 */
-	public function clearPageCacheMgm($params) {
-		$pageIdArray = $params['table'] == 'pages' ? array(intval($params['uid'])) : $params['pageIdArray'];
-		if (is_array($pageIdArray) && count($pageIdArray) > 0) {
-			/** @noinspection PhpUndefinedMethodInspection */
-			$pageIdList = implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($pageIdArray));
-			/** @noinspection PhpUndefinedMethodInspection */
-			$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_realurl_urlencodecache', 'page_id IN (' . $pageIdList . ')');
-			/** @noinspection PhpUndefinedMethodInspection */
-			$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_realurl_urldecodecache', 'page_id IN (' . $pageIdList . ')');
-			/** @noinspection PhpUndefinedMethodInspection */
-			$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_realurl_pathcache', 'page_id IN (' . $pageIdList . ') AND expire>0 AND expire<=' . time());
-		}
-	}
-
 	/**
 	 * Checks for wrong boolean values (like <code>'1'</code> or </code>'true'</code> instead of <code>1</code> and <code>true</code>.
 	 *
