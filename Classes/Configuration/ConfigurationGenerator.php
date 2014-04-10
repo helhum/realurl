@@ -1,4 +1,6 @@
 <?php
+namespace Tx\Realurl\Configuration;
+
 /***************************************************************
 *  Copyright notice
 *
@@ -32,11 +34,19 @@
  * @package realurl
  * @subpackage tx_realurl
  */
-class tx_realurl_autoconfgen {
+class ConfigurationGenerator {
 
-	/* @var $db t3lib_DB */
-	var $databaseConnection;
-	var $hasStaticInfoTables;
+	const AUTOCONFIGURTION_FILE = 'typo3conf/realurl_autoconf.php';
+
+	/**
+	 * @var \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	protected $databaseConnection;
+
+	/**
+	 * @var bool
+	 */
+	protected $hasStaticInfoTables;
 
 	/**
 	 * Generates configuration. Locks configuration file for exclusive access to avoid collisions. Will not be stabe on Windows.
@@ -44,7 +54,7 @@ class tx_realurl_autoconfgen {
 	 * @return	void
 	 */
 	public function generateConfiguration() {
-		$fileName = PATH_site . TX_REALURL_AUTOCONF_FILE;
+		$fileName = PATH_site . self::AUTOCONFIGURTION_FILE;
 
 		$lockObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_lock', $fileName, $GLOBALS['TYPO3_CONF_VARS']['SYS']['lockingMode']);
 		/** @var t3lib_lock $lockObject */

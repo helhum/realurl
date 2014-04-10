@@ -1,5 +1,5 @@
 <?php
-namespace Tx\Realurl\Controller;
+namespace Tx\Realurl\View;
 
 /***************************************************************
  *  Copyright notice
@@ -26,11 +26,13 @@ namespace Tx\Realurl\Controller;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
- * Class InfoModuleController
+ * Class AdministrationModuleFunction
  */
-class InfoModuleController {
+class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule {
 	/**
 	 * @var int
 	 */
@@ -138,8 +140,7 @@ class InfoModuleController {
 	protected function getFunctionMenu() {
 		return $GLOBALS['LANG']->getLL('function') . ' ' .
 			\TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu($this->pObj->id, 'SET[type]',
-				$this->pObj->MOD_SETTINGS['type'], $this->pObj->MOD_MENU['type'],
-				'index.php');
+				$this->pObj->MOD_SETTINGS['type'], $this->pObj->MOD_MENU['type']);
 	}
 
 	/**
@@ -165,7 +166,7 @@ class InfoModuleController {
 	 */
 	protected function getDepthSelector() {
 		return $GLOBALS['LANG']->getLL('depth') .
-			\TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu($this->pObj->id,'SET[depth]',$this->pObj->MOD_SETTINGS['depth'],$this->pObj->MOD_MENU['depth'],'index.php');
+			\TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu($this->pObj->id,'SET[depth]',$this->pObj->MOD_SETTINGS['depth'],$this->pObj->MOD_MENU['depth']);
 	}
 
 	/**
@@ -188,10 +189,10 @@ class InfoModuleController {
 			// Creating top icon; the current page
 		$tree->tree[] = array(
 			'row' => $treeStartingRecord,
-			'HTML' => \TYPO3\CMS\Backend\Utility\IconUtility::getIconImage('pages', $treeStartingRecord, $GLOBALS['BACK_PATH'], 'align="top"')
+			'HTML' => \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIconForRecord('pages', $treeStartingRecord)
 		);
 
-			// Create the tree from starting point:
+		// Create the tree from starting point:
 		if ($this->pObj->MOD_SETTINGS['depth'] > 0) {
 			$tree->getTree($treeStartingPoint, $this->pObj->MOD_SETTINGS['depth'], '');
 		}
@@ -502,13 +503,19 @@ class InfoModuleController {
 	}
 
 	/**
-	 * Links to the module script and sets necessary parameters (only for pathcache display)
+	 * Links to the module script and sets necessary parameters (only for path cache display)
 	 *
-	 * @param	string		Additional GET vars
-	 * @return	string		script + query
+	 * @param string $parameters Additional GET vars
+	 * @return string script + query
 	 */
-	function linkSelf($addParams)	{
-		return htmlspecialchars('index.php?id='.$this->pObj->id.'&showLanguage='.rawurlencode(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('showLanguage')).$addParams);
+	function linkSelf($parameters) {
+		return htmlspecialchars(BackendUtility::getModuleUrl(
+			'web_info',
+			array(
+				'id' => $this->pObj->id,
+				'showLanguage' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('showLanguage'),
+			)
+		) . $parameters);
 	}
 
 	/**
@@ -1704,7 +1711,7 @@ class InfoModuleController {
 	/**
 	 * Creates a code for 'Add new entries' button
 	 *
-	 * @return	void
+	 * @return string
 	 */
 	protected function getNewButton() {
 		$content = '<div style="margin:0 0 0.5em 3px"><a href="'.$this->linkSelf('&cmd=new').'">'.

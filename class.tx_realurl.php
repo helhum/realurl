@@ -2173,7 +2173,7 @@ class tx_realurl {
 		$realUrlConf = (array)@unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['realurl']);
 		// Autoconfiguration
 		if ($realUrlConf['enableAutoConf']) {
-			$autoConfPath = PATH_site . TX_REALURL_AUTOCONF_FILE;
+			$autoConfPath = PATH_site . \Tx\Realurl\Configuration\ConfigurationGenerator::AUTOCONFIGURTION_FILE;
 			$testConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl'];
 			if (is_array($testConf)) {
 				unset($testConf['getHost']);
@@ -2184,7 +2184,7 @@ class tx_realurl {
 
 			/** @noinspection PhpIncludeInspection */
 			if (count($testConf) == 0 && !@include_once($autoConfPath)) {
-				$autoConfGenerator = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_realurl_autoconfgen');
+				$autoConfGenerator = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Realurl\\Configuration\\ConfigurationGenerator');
 				$autoConfGenerator->generateConfiguration();
 				unset($autoConfGenerator);
 				/** @noinspection PhpIncludeInspection */
