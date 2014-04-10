@@ -52,7 +52,7 @@ class UrlRewritingHook implements SingletonInterface {
 	 * @var TypoScriptFrontendController / GLOBALS['TSFE'] (for ->decodeSpURL())
 	 */
 	var $pObj;
-	var $extConf; // Configuration for extension, from $TYPO3_CONF_VARS['EXTCONF']['realurl']
+	var $extConf; // Configuration for extension, from $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl']
 	var $adminJumpSet = FALSE; // Is set true (->encodeSpURL) if AdminJump is active in some way. Is set false again when captured first time!
 	var $fe_user_prefix_set = FALSE; // Is set true (->encodeSpURL) if there is a frontend user logged in
 	var $filePart; // Contains the filename when a Speaking URL is decoded.

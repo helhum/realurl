@@ -1292,8 +1292,6 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 	 * @return	string		HTML
 	 */
 	function configView()	{
-		global $TYPO3_CONF_VARS;
-
 			// Initialize array browser:
 		$arrayBrowser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Lowlevel\\Utility\\ArrayBrowser');
 		/** @var \TYPO3\CMS\Lowlevel\Utility\ArrayBrowser $arrayBrowser */
@@ -1302,11 +1300,11 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 		$arrayBrowser->dontLinkVar = TRUE;
 
 			// Create the display code:
-		$theVar = $TYPO3_CONF_VARS['EXTCONF']['realurl'];
+		$theVar = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl'];
 		$tree = $arrayBrowser->tree($theVar, '', '');
 
 		$tree = '<hr/>
-		<b>$TYPO3_CONF_VARS[\'EXTCONF\'][\'realurl\']</b>
+		<b>$GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'realurl\']</b>
 		<br/>
 		<span class="nobr">'.$tree.'</span>';
 

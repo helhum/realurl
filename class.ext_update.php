@@ -90,9 +90,3 @@ class ext_update {
 			'WHERE tx_aoerealurlpath_overridepath<>\'\' AND tx_realurl_pathsegment=\'\'');
 	}
 }
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/realurl/class.ext_update.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/realurl/class.ext_update.php']);
-}
-
-?>
