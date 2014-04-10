@@ -65,7 +65,7 @@
  */
 
 $GLOBALS['LANG']->includeLLfile('EXT:realurl/modfunc1/locallang.xml');
-require_once(t3lib_extMgm::extPath('realurl', 'modfunc1/class.tx_realurl_pagebrowser.php'));
+require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('realurl', 'modfunc1/class.tx_realurl_pagebrowser.php'));
 
 /**
  * Speaking Url management extension
@@ -74,7 +74,7 @@ require_once(t3lib_extMgm::extPath('realurl', 'modfunc1/class.tx_realurl_pagebro
  * @package TYPO3
  * @subpackage tx_realurl
  */
-class tx_realurl_modfunc1 extends t3lib_extobjbase {
+class tx_realurl_modfunc1 extends \TYPO3\CMS\Backend\Module\AbstractFunctionModule {
 
 
 		// Internal, dynamic:
@@ -105,7 +105,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 			)
 		);
 
-		$modMenu['type'] = t3lib_BEfunc::unsetMenuItems($this->pObj->modTSconfig['properties'], $modMenu['type'], 'menu.realurl_type');
+		$modMenu['type'] = \TYPO3\CMS\Backend\Utility\BackendUtility::unsetMenuItems($this->pObj->modTSconfig['properties'], $modMenu['type'], 'menu.realurl_type');
 
 		return $modMenu;
 	}
@@ -174,7 +174,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 */
 	protected function getFunctionMenu() {
 		return $GLOBALS['LANG']->getLL('function') . ' ' .
-			t3lib_BEfunc::getFuncMenu($this->pObj->id, 'SET[type]',
+			\TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu($this->pObj->id, 'SET[type]',
 				$this->pObj->MOD_SETTINGS['type'], $this->pObj->MOD_MENU['type'],
 				'index.php');
 	}
@@ -202,30 +202,30 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 */
 	protected function getDepthSelector() {
 		return $GLOBALS['LANG']->getLL('depth') .
-			t3lib_BEfunc::getFuncMenu($this->pObj->id,'SET[depth]',$this->pObj->MOD_SETTINGS['depth'],$this->pObj->MOD_MENU['depth'],'index.php');
+			\TYPO3\CMS\Backend\Utility\BackendUtility::getFuncMenu($this->pObj->id,'SET[depth]',$this->pObj->MOD_SETTINGS['depth'],$this->pObj->MOD_MENU['depth'],'index.php');
 	}
 
 	/**
 	 * Initializes the page tree.
 	 *
-	 * @return t3lib_pageTree
+	 * @return \TYPO3\CMS\Backend\Tree\View\PageTreeView
 	 */
 	protected function initializeTree() {
-		$tree = t3lib_div::makeInstance('t3lib_pageTree');
-		/** @var t3lib_pageTree $tree */
+		$tree = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Tree\\View\\PageTreeView');
+		/** @var \TYPO3\CMS\Backend\Tree\View\PageTreeView $tree */
 		$tree->addField('nav_title', true);
 		$tree->addField('alias', true);
 		$tree->addField('tx_realurl_pathsegment', true);
 		$tree->init('AND '.$GLOBALS['BE_USER']->getPagePermsClause(1));
 
 		$treeStartingPoint = intval($this->pObj->id);
-		$treeStartingRecord = t3lib_BEfunc::getRecord('pages', $treeStartingPoint);
-		t3lib_BEfunc::workspaceOL('pages',$treeStartingRecord);
+		$treeStartingRecord = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord('pages', $treeStartingPoint);
+		\TYPO3\CMS\Backend\Utility\BackendUtility::workspaceOL('pages',$treeStartingRecord);
 
 			// Creating top icon; the current page
 		$tree->tree[] = array(
 			'row' => $treeStartingRecord,
-			'HTML' => t3lib_iconWorks::getIconImage('pages', $treeStartingRecord, $GLOBALS['BACK_PATH'], 'align="top"')
+			'HTML' => \TYPO3\CMS\Backend\Utility\IconUtility::getIconImage('pages', $treeStartingRecord, $GLOBALS['BACK_PATH'], 'align="top"')
 		);
 
 			// Create the tree from starting point:
@@ -259,14 +259,14 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 * @param	array		The Page tree data
 	 * @return	string		HTML for the information table.
 	 */
-	function renderModule(t3lib_pageTree $tree)	{
+	function renderModule(\TYPO3\CMS\Backend\Tree\View\PageTreeView $tree)	{
 
 			// Initialize:
-		$searchPath = trim(t3lib_div::_GP('pathPrefixSearch'));
-		$cmd = t3lib_div::_GET('cmd');
-		$entry = t3lib_div::_GET('entry');
-		$searchForm_replace = t3lib_div::_POST('_replace');
-		$searchForm_delete = t3lib_div::_POST('_delete');
+		$searchPath = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('pathPrefixSearch'));
+		$cmd = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('cmd');
+		$entry = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('entry');
+		$searchForm_replace = \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('_replace');
+		$searchForm_delete = \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('_delete');
 
 		$trackSameUrl = array();
 		$this->searchResultCounter = 0;
@@ -280,7 +280,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 			$pathCacheInfo = $this->getPathCache($row['row']['uid']);
 
 				// Row title:
-			$rowTitle = $row['HTML'].t3lib_BEfunc::getRecordTitle('pages',$row['row'],TRUE);
+			$rowTitle = $row['HTML'].\TYPO3\CMS\Backend\Utility\BackendUtility::getRecordTitle('pages',$row['row'],TRUE);
 			$cellAttrib = ($row['row']['_CSSCLASS'] ? ' class="'.$row['row']['_CSSCLASS'].'"' : '');
 
 				// Add at least one empty element:
@@ -316,27 +316,27 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 
 						// Add values from alternative field used to generate URL:
 					$baseRow = $row['row'];	// page row as base.
-					$onClick = t3lib_BEfunc::editOnClick('&edit[pages]['.$row['row']['uid'].']=edit&columnsOnly=title,nav_title,alias,tx_realurl_pathsegment',$this->pObj->doc->backPath);
+					$onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick('&edit[pages]['.$row['row']['uid'].']=edit&columnsOnly=title,nav_title,alias,tx_realurl_pathsegment',$this->pObj->doc->backPath);
 					$editIcon = '<a href="#" onclick="'.htmlspecialchars($onClick).'">'.
-								'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="" alt="" />'.
+								'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="" alt="" />'.
 								'</a>';
-					$onClick = t3lib_BEfunc::viewOnClick($row['row']['uid'],$this->pObj->doc->backPath,'','','','');
+					$onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::viewOnClick($row['row']['uid'],$this->pObj->doc->backPath,'','','','');
 					$editIcon.= '<a href="#" onclick="'.htmlspecialchars($onClick).'">'.
-								'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/zoom.gif','width="12" height="12"').' title="" alt="" />'.
+								'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/zoom.gif','width="12" height="12"').' title="" alt="" />'.
 								'</a>';
 
 					if ($inf['language_id']>0)	{	// For alternative languages, show another list of fields, form page overlay record:
 						$editIcon = '';
-						list($olRec) = t3lib_BEfunc::getRecordsByField('pages_language_overlay','pid',$row['row']['uid'],' AND sys_language_uid='.intval($inf['language_id']));
+						list($olRec) = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecordsByField('pages_language_overlay','pid',$row['row']['uid'],' AND sys_language_uid='.intval($inf['language_id']));
 						if (is_array($olRec))	{
 							$baseRow = array_merge($baseRow,$olRec);
-							$onClick = t3lib_BEfunc::editOnClick('&edit[pages_language_overlay]['.$olRec['uid'].']=edit&columnsOnly=title,nav_title',$this->pObj->doc->backPath);
+							$onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick('&edit[pages_language_overlay]['.$olRec['uid'].']=edit&columnsOnly=title,nav_title',$this->pObj->doc->backPath);
 							$editIcon = '<a href="#" onclick="'.htmlspecialchars($onClick).'">'.
-										'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="" alt="" />'.
+										'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="" alt="" />'.
 										'</a>';
-							$onClick = t3lib_BEfunc::viewOnClick($row['row']['uid'],$this->pObj->doc->backPath,'','','','&L='.$olRec['sys_language_uid']);
+							$onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::viewOnClick($row['row']['uid'],$this->pObj->doc->backPath,'','','','&L='.$olRec['sys_language_uid']);
 							$editIcon.= '<a href="#" onclick="'.htmlspecialchars($onClick).'">'.
-										'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/zoom.gif','width="12" height="12"').' title="" alt="" />'.
+										'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/zoom.gif','width="12" height="12"').' title="" alt="" />'.
 										'</a>';
 						} else {
 							$baseRow = array();
@@ -349,7 +349,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 					$tCells[]='<td nowrap="nowrap">'.htmlspecialchars($sources).'</td>';
 
 						// Show page path:
-					if (strcmp($searchPath,'') && t3lib_div::isFirstPartOfStr($inf['pagepath'],$searchPath) && !$inf['expire'])	{
+					if (strcmp($searchPath,'') && \TYPO3\CMS\Core\Utility\GeneralUtility::isFirstPartOfStr($inf['pagepath'],$searchPath) && !$inf['expire'])	{
 
 							// Delete entry:
 						if ($searchForm_delete)	{
@@ -357,7 +357,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 							$deletedEntry = TRUE;
 							$pagePath = '[DELETED]';
 						} elseif ($searchForm_replace) {
-							$replacePart = trim(t3lib_div::_POST('pathPrefixReplace'));
+							$replacePart = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_POST('pathPrefixReplace'));
 							$this->editPathCacheEntry($inf['cache_id'],
 								$replacePart.substr($inf['pagepath'],strlen($searchPath)));
 
@@ -394,24 +394,24 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 					} else {
 						$tCells[]='<td>'.
 								'<a href="'.$this->linkSelf('&cmd=delete&entry='.$inf['cache_id']).'">'.
-								'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete" alt="" />'.
+								'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete" alt="" />'.
 								'</a>'.
 								'<a href="'.$this->linkSelf('&cmd=edit&entry='.$inf['cache_id']).'">'.
-								'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="Edit" alt="" />'.
+								'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="Edit" alt="" />'.
 								'</a>'.
 								'<a href="'.$this->linkSelf('&pathPrefixSearch='.rawurlencode($inf['pagepath'])).'">'.
-								'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/napshot.gif','width="12" height="12"').' title="Use for search" alt="" />'.
+								'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/napshot.gif','width="12" height="12"').' title="Use for search" alt="" />'.
 								'</a>'.
 								'<a href="'.$this->linkSelf('&cmd=copy&entry='.$inf['cache_id']).'">'.
-								'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/clip_copy.gif','width="12" height="12"').' title="Copy entry" alt="" />'.
+								'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/clip_copy.gif','width="12" height="12"').' title="Copy entry" alt="" />'.
 								'</a>'.
 								'</td>';
 					}
 					$tCells[]='<td'.($inf['expire'] && $inf['expire']<time() ? ' style="color: red;"':'').'>'.
-								($inf['expire'] ? htmlspecialchars(t3lib_BEfunc::dateTimeAge($inf['expire'],-1)) : '').
+								($inf['expire'] ? htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::dateTimeAge($inf['expire'],-1)) : '').
 								($inf['expire'] ?
 									'<a href="'.$this->linkSelf('&cmd=raiseExpire&entry='.$inf['cache_id']).'">'.
-									'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/up.gif','width="14" height="14"').' title="Set expire time to 30 days" alt="" />'.
+									'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/up.gif','width="14" height="14"').' title="Set expire time to 30 days" alt="" />'.
 									'</a>' : '').
 								'</td>';
 
@@ -433,7 +433,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 					$tCells[]='<td>'.htmlspecialchars($inf['rootpage_id']).'</td>';
 
 
-					#$tCells[]='<td nowrap="nowrap">'.htmlspecialchars(t3lib_BEfunc::datetime($inf['expire'])).' / '.htmlspecialchars(t3lib_BEfunc::calcAge($inf['expire']-time())).'</td>';
+					#$tCells[]='<td nowrap="nowrap">'.htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::datetime($inf['expire'])).' / '.htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::calcAge($inf['expire']-time())).'</td>';
 
 					$trackSameUrl[$hash] = $inf['page_id'];
 
@@ -458,15 +458,15 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 		$tCells[]='<td>Pagepath:</td>';
 		$tCells[]='<td>'.
 					'<a href="'.$this->linkSelf('&cmd=delete&entry=ALL').'" onclick="return confirm(\'Are you sure you want to flush all cached page paths?\');">'.
-					'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' alt="" />'.
+					'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' alt="" />'.
 					'</a>'.
 					'<a href="'.$this->linkSelf('&cmd=edit&entry=ALL').'">'.
-					'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="" alt="" />'.
+					'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="" alt="" />'.
 					'</a>'.
 					'</td>';
 		$tCells[]='<td>Expires:'.
 						'<a href="'.$this->linkSelf('&cmd=flushExpired').'">'.
-						'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Flush all expired" alt="" />'.
+						'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Flush all expired" alt="" />'.
 						'</a>'.
 					'</td>';
 		$tCells[]='<td>Errors:</td>';
@@ -500,9 +500,9 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 */
 	function getPathCache($pageId)	{
 
-		$showLanguage = t3lib_div::_GP('showLanguage');
-		$cmd = t3lib_div::_GET('cmd');
-		$entry = t3lib_div::_GET('entry');
+		$showLanguage = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('showLanguage');
+		$cmd = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('cmd');
+		$entry = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('entry');
 
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 					'*',
@@ -545,7 +545,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 * @return	string		script + query
 	 */
 	function linkSelf($addParams)	{
-		return htmlspecialchars('index.php?id='.$this->pObj->id.'&showLanguage='.rawurlencode(t3lib_div::_GP('showLanguage')).$addParams);
+		return htmlspecialchars('index.php?id='.$this->pObj->id.'&showLanguage='.rawurlencode(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('showLanguage')).$addParams);
 	}
 
 	/**
@@ -574,8 +574,8 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	private function getReplaceAndDeleteFields() {
 		$output = '';
 
-		if ($this->searchResultCounter && !t3lib_div::_POST('_replace') && !t3lib_div::_POST('_delete'))	{
-			$output .= '<div><label for="pathPrefixReplace">Replace with:</label> <input type="text" name="pathPrefixReplace" value="'.htmlspecialchars(t3lib_div::_GP('pathPrefixSearch')).'" />';
+		if ($this->searchResultCounter && !\TYPO3\CMS\Core\Utility\GeneralUtility::_POST('_replace') && !\TYPO3\CMS\Core\Utility\GeneralUtility::_POST('_delete'))	{
+			$output .= '<div><label for="pathPrefixReplace">Replace with:</label> <input type="text" name="pathPrefixReplace" value="'.htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('pathPrefixSearch')).'" />';
 			$output .= '<input type="submit" name="_replace" value="Replace" /> or <input type="submit" name="_delete" value="Delete" /></div>';
 			$output .= '<div><b>'.sprintf('Found: %d result(s).',$this->searchResultCounter).'</b></div>';
 		}
@@ -589,7 +589,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	protected function getSearchField() {
 		$output = '<label for="pathPrefixSearch">' . $GLOBALS['LANG']->getLL('search_path', true) .
 			'</label> <input type="text" name="pathPrefixSearch" id="pathPrefixSearch" value="' .
-				htmlspecialchars(t3lib_div::_GP('pathPrefixSearch')).'" />' .
+				htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('pathPrefixSearch')).'" />' .
 			'<input type="submit" name="_" value="' .
 				$GLOBALS['LANG']->getLL('look_up', true) . '" />';
 
@@ -606,7 +606,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 		$languages = $this->getSystemLanguages();
 
 		$options = array();
-		$showLanguage = t3lib_div::_GP('showLanguage');
+		$showLanguage = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('showLanguage');
 		foreach ($languages as $language) {
 			$selected = $showLanguage === $language['uid'] ? ' selected="selected"' : '';
 			$options[] = '<option value="' . $language['uid'] . '"' . $selected . '>' .
@@ -623,7 +623,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 * @return array
 	 */
 	protected function getSystemLanguages() {
-		$languages = (array)t3lib_BEfunc::getRecordsByField('sys_language','pid',0,'','','title');
+		$languages = (array)\TYPO3\CMS\Backend\Utility\BackendUtility::getRecordsByField('sys_language','pid',0,'','','title');
 
 		$defaultLanguageLabel = $this->getDefaultLanguageName();
 
@@ -639,7 +639,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 * @return string
 	 */
 	protected function getDefaultLanguageName() {
-		$tsConfig = t3lib_BEfunc::getPagesTSconfig($this->pObj->id);
+		$tsConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig($this->pObj->id);
 		if (isset($tsConfig['mod.']['SHARED.']['defaultLanguageLabel'])) {
 			$label = $tsConfig['mod.']['SHARED.']['defaultLanguageLabel'];
 		}
@@ -721,8 +721,8 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 * @return	void
 	 */
 	function edit_save()	{
-		if (t3lib_div::_POST('_edit_save'))	{
-			$editArray = t3lib_div::_POST('edit');
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_POST('_edit_save'))	{
+			$editArray = \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('edit');
 			foreach($editArray as $cache_id => $value)	{
 				$this->editPathCacheEntry($cache_id,trim($value));
 			}
@@ -766,13 +766,13 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 * @param	array		The Page tree data
 	 * @return	string		HTML for the information table.
 	 */
-	function decodeView(t3lib_pageTree $tree)	{
+	function decodeView(\TYPO3\CMS\Backend\Tree\View\PageTreeView $tree)	{
 
 			// Delete entries:
-		$cmd = t3lib_div::_GP('cmd');
+		$cmd = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cmd');
 		$subcmd = '';
 		if ($cmd === 'deleteDC')	{
-			$subcmd = t3lib_div::_GP('entry');
+			$subcmd = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('entry');
 			$this->clearDEncodeCache($subcmd,TRUE);
 		}
 
@@ -786,7 +786,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 			$displayRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*','tx_realurl_urldecodecache','page_id='.intval($row['row']['uid']),'','spurl');
 
 				// Row title:
-			$rowTitle = $row['HTML'].t3lib_BEfunc::getRecordTitle('pages',$row['row'],TRUE);
+			$rowTitle = $row['HTML'].\TYPO3\CMS\Backend\Utility\BackendUtility::getRecordTitle('pages',$row['row'],TRUE);
 
 				// Add at least one empty element:
 			if (!count($displayRows) || $subcmd==='displayed')	{
@@ -821,7 +821,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 						$tCells[]='<td nowrap="nowrap" rowspan="'.count($displayRows).'">'.$row['row']['uid'].'</td>';
 						$tCells[]='<td rowspan="'.count($displayRows).'">'.
 							'<a href="'.$this->linkSelf('&cmd=deleteDC&entry=page_'.intval($row['row']['uid'])).'">'.
-							'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entries for page" alt="" />'.
+							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entries for page" alt="" />'.
 							'</a>'.
 						'</td>';
 					}
@@ -832,18 +832,18 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 						// Get vars:
 					$queryValues = unserialize($inf['content']);
 					$queryParams = '?id='.$queryValues['id'].
-									(is_array($queryValues['GET_VARS']) ? t3lib_div::implodeArrayForUrl('',$queryValues['GET_VARS']) : '');
+									(is_array($queryValues['GET_VARS']) ? \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('',$queryValues['GET_VARS']) : '');
 					$tCells[]='<td>'.htmlspecialchars($queryParams).'</td>';
 
 						// Delete:
 					$tCells[]='<td>'.
 							'<a href="'.$this->linkSelf('&cmd=deleteDC&entry=urlhash_'.intval($inf['url_hash'])).'">'.
-							'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entry" alt="" />'.
+							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entry" alt="" />'.
 							'</a>'.
 						'</td>';
 
 						// Timestamp:
-					$tCells[]='<td>'.htmlspecialchars(t3lib_BEfunc::datetime($inf['tstamp'])).' / '.htmlspecialchars(t3lib_BEfunc::calcAge(time()-$inf['tstamp'])).'</td>';
+					$tCells[]='<td>'.htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::datetime($inf['tstamp'])).' / '.htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::calcAge(time()-$inf['tstamp'])).'</td>';
 
 						// Compile Row:
 					$output.= '
@@ -879,12 +879,12 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 		$output = '<br/><br/>
 		Displayed entries: <b>'.$countDisplayed.'</b> '.
 			'<a href="'.$this->linkSelf('&cmd=deleteDC&entry=displayed').'">'.
-			'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete displayed entries" alt="" />'.
+			'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete displayed entries" alt="" />'.
 			'</a>'.
 		'<br/>
 		Total entries in decode cache: <b>'.$count_allInTable['count'].'</b> '.
 			'<a href="'.$this->linkSelf('&cmd=deleteDC&entry=all').'">'.
-			'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete WHOLE decode cache!" alt="" />'.
+			'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete WHOLE decode cache!" alt="" />'.
 			'</a>'.
 		'<br/>
 		<table border="0" cellspacing="1" cellpadding="0" id="tx-realurl-pathcacheTable" class="lrPadding c-list">'.$output.'
@@ -916,13 +916,13 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 * @param	array		The Page tree data
 	 * @return	string		HTML for the information table.
 	 */
-	function encodeView(t3lib_pageTree $tree)	{
+	function encodeView(\TYPO3\CMS\Backend\Tree\View\PageTreeView $tree)	{
 
 			// Delete entries:
-		$cmd = t3lib_div::_GP('cmd');
+		$cmd = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cmd');
 		$subcmd = '';
 		if ($cmd === 'deleteEC')	{
-			$subcmd = t3lib_div::_GP('entry');
+			$subcmd = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('entry');
 			$this->clearDEncodeCache($subcmd);
 		}
 
@@ -938,7 +938,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 			$displayRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('*','tx_realurl_urlencodecache','page_id='.intval($row['row']['uid']),'','content');
 
 				// Row title:
-			$rowTitle = $row['HTML'].t3lib_BEfunc::getRecordTitle('pages',$row['row'],TRUE);
+			$rowTitle = $row['HTML'].\TYPO3\CMS\Backend\Utility\BackendUtility::getRecordTitle('pages',$row['row'],TRUE);
 
 				// Add at least one empty element:
 			if (!count($displayRows) || $subcmd==='displayed')	{
@@ -973,36 +973,36 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 						$tCells[]='<td nowrap="nowrap" rowspan="'.count($displayRows).'">'.$row['row']['uid'].'</td>';
 						$tCells[]='<td rowspan="'.count($displayRows).'">'.
 							'<a href="'.$this->linkSelf('&cmd=deleteEC&entry=page_'.intval($row['row']['uid'])).'">'.
-							'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entries for page" alt="" />'.
+							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entries for page" alt="" />'.
 							'</a>'.
 						'</td>';
 					}
 
 						// Get vars:
-					$tCells[]='<td>'.htmlspecialchars(t3lib_div::fixed_lgd_cs($inf['origparams'], 100)).'</td>';
+					$tCells[]='<td>'.htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($inf['origparams'], 100)).'</td>';
 
 						// Internal Extras:
-					$tCells[]='<td>'.($inf['internalExtras'] ? t3lib_div::arrayToLogString(unserialize($inf['internalExtras'])) : '&nbsp;').'</td>';
+					$tCells[]='<td>'.($inf['internalExtras'] ? \TYPO3\CMS\Core\Utility\GeneralUtility::arrayToLogString(unserialize($inf['internalExtras'])) : '&nbsp;').'</td>';
 
 						// Path:
-					$tCells[]='<td>'.htmlspecialchars(t3lib_div::fixed_lgd_cs($inf['content'],100)).'</td>';
+					$tCells[]='<td>'.htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($inf['content'],100)).'</td>';
 
 						// Delete:
 					$tCells[]='<td>'.
 							'<a href="'.$this->linkSelf('&cmd=deleteEC&entry=urlhash_'.intval($inf['url_hash'])).'">'.
-							'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entry" alt="" />'.
+							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entry" alt="" />'.
 							'</a>'.
 						'</td>';
 
 						// Error:
 					$eMsg = ($duplicates[$inf['content']] && $duplicates[$inf['content']] !== $row['row']['uid'] ? $this->pObj->doc->icons(2).'Already used on page ID '.$duplicates[$inf['content']].'<br/>' : '');
-					if (count($GLOBALS['TYPO3_DB']->exec_SELECTgetRows('url_hash','tx_realurl_redirects','url_hash='.intval(t3lib_div::md5int($inf['content'])))))	{
+					if (count($GLOBALS['TYPO3_DB']->exec_SELECTgetRows('url_hash','tx_realurl_redirects','url_hash='.intval(\TYPO3\CMS\Core\Utility\GeneralUtility::md5int($inf['content'])))))	{
 						$eMsg.= $this->pObj->doc->icons(3).'Also a redirect!';
 					}
 					$tCells[]='<td>'.$eMsg.'</td>';
 
 						// Timestamp:
-					$tCells[]='<td>'.htmlspecialchars(t3lib_BEfunc::datetime($inf['tstamp'])).' / '.htmlspecialchars(t3lib_BEfunc::calcAge(time()-$inf['tstamp'])).'</td>';
+					$tCells[]='<td>'.htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::datetime($inf['tstamp'])).' / '.htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::calcAge(time()-$inf['tstamp'])).'</td>';
 
 						// Compile Row:
 					$output.= '
@@ -1048,12 +1048,12 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 		<br/>
 		Displayed entries: <b>'.$countDisplayed.'</b> '.
 			'<a href="'.$this->linkSelf('&cmd=deleteEC&entry=displayed').'">'.
-			'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete displayed entries" alt="" />'.
+			'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete displayed entries" alt="" />'.
 			'</a>'.
 		'<br/>
 		Total entries in encode cache: <b>'.$count_allInTable['count'].'</b> '.
 			'<a href="'.$this->linkSelf('&cmd=deleteEC&entry=all').'">'.
-			'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete WHOLE encode cache!" alt="" />'.
+			'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete WHOLE encode cache!" alt="" />'.
 			'</a>'.
 		'<br/>
 		<table border="0" cellspacing="1" cellpadding="0" id="tx-realurl-pathcacheTable" class="lrPadding c-list">'.$output.'
@@ -1107,10 +1107,10 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 */
 	function uniqueAlias()	{
 
-		$tableName = t3lib_div::_GP('table');
-		$cmd = t3lib_div::_GET('cmd');
-		$entry = t3lib_div::_GET('entry');
-		$search = t3lib_div::_POST('search');
+		$tableName = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('table');
+		$cmd = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('cmd');
+		$entry = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('entry');
+		$search = \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('search');
 
 			// Select rows:
 		$overviewRows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('tablename,count(*) as number_of_rows','tx_realurl_uniqalias','','tablename','','','tablename');
@@ -1156,16 +1156,16 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 				}
 
 				$tCells[]='<td>'.htmlspecialchars($aliasRecord['lang']).'</td>';
-				$tCells[]='<td'.($aliasRecord['expire'] && $aliasRecord['expire']<time() ? ' style="color: red;"':'').'>'.htmlspecialchars(t3lib_BEfunc::dateTimeAge($aliasRecord['expire'])).'</td>';
+				$tCells[]='<td'.($aliasRecord['expire'] && $aliasRecord['expire']<time() ? ' style="color: red;"':'').'>'.htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::dateTimeAge($aliasRecord['expire'])).'</td>';
 
 				$tCells[]='<td>'.
 								// Edit link:
 							'<a href="'.$this->linkSelf('&table='.rawurlencode($tableName).'&cmd=edit&entry='.$aliasRecord['uid']).'">'.
-							'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="" alt="" />'.
+							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="" alt="" />'.
 							'</a>'.
 								// Delete link:
 							'<a href="'.$this->linkSelf('&table='.rawurlencode($tableName).'&cmd=delete&entry='.$aliasRecord['uid']).'">'.
-							'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="" alt="" />'.
+							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="" alt="" />'.
 							'</a>'.
 							'</td>';
 
@@ -1196,15 +1196,15 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 			$tCells[]='<td>Lang:</td>';
 			$tCells[]='<td>Expire:'.
 						(!$search ? '<a href="'.$this->linkSelf('&table='.rawurlencode($tableName).'&cmd=flushExpired').'">'.
-						'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Flush expired" alt="" />'.
+						'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Flush expired" alt="" />'.
 						'</a>' : '').
 						'</td>';
 			$tCells[]='<td>'.
 						(!$search ? '<a href="'.$this->linkSelf('&table='.rawurlencode($tableName).'&cmd=edit&entry=ALL').'">'.
-						'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="Edit all" alt="" />'.
+						'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="Edit all" alt="" />'.
 						'</a>'.
 						'<a href="'.$this->linkSelf('&table='.rawurlencode($tableName).'&cmd=delete&entry=ALL').'" onclick="return confirm(\'Delete all?\');">'.
-						'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete all" alt="" />'.
+						'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete all" alt="" />'.
 						'</a>' : '').
 						'</td>';
 			$tCells[]='<td>Error:</td>';
@@ -1292,8 +1292,8 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 * @return	void
 	 */
 	function edit_save_uniqAlias()	{
-		if (t3lib_div::_POST('_edit_save'))	{
-			$editArray = t3lib_div::_POST('edit');
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_POST('_edit_save'))	{
+			$editArray = \TYPO3\CMS\Core\Utility\GeneralUtility::_POST('edit');
 			foreach($editArray as $cache_id => $value)	{
 				$this->editUniqAliasEntry($cache_id,trim($value));
 			}
@@ -1325,8 +1325,8 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 		global $TYPO3_CONF_VARS;
 
 			// Initialize array browser:
-		$arrayBrowser = t3lib_div::makeInstance('t3lib_arrayBrowser');
-		/** @var t3lib_arrayBrowser $arrayBrowser */
+		$arrayBrowser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Lowlevel\\Utility\\ArrayBrowser');
+		/** @var \TYPO3\CMS\Lowlevel\Utility\ArrayBrowser $arrayBrowser */
 		$arrayBrowser->expAll = TRUE;
 		$arrayBrowser->fixedLgd = FALSE;
 		$arrayBrowser->dontLinkVar = TRUE;
@@ -1366,7 +1366,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 */
 	function logView()	{
 
-		$cmd = t3lib_div::_GP('cmd');
+		$cmd = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cmd');
 		if ($cmd==='deleteAll')	{
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery(
 				'tx_realurl_errorlog',
@@ -1400,17 +1400,17 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 					// Add data:
 				$tCells = array();
 				$tCells[]='<td>'.$rec['counter'].'</td>';
-				$tCells[]='<td>'.t3lib_BEfunc::dateTimeAge($rec['tstamp']).'</td>';
+				$tCells[]='<td>'.\TYPO3\CMS\Backend\Utility\BackendUtility::dateTimeAge($rec['tstamp']).'</td>';
 				$tCells[]='<td><a href="'.htmlspecialchars($host.'/'.$rec['url']).'" target="_blank">'.($host ? $host . '/' : '') . htmlspecialchars($rec['url']).'</a>'.
 							' <a href="'.$this->linkSelf('&cmd=new&data[0][source]='.rawurlencode($rec['url']).'&SET[type]=redirects').'">'.
-							'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/napshot.gif','width="12" height="12"').' title="Set as redirect" alt="" />'.
+							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/napshot.gif','width="12" height="12"').' title="Set as redirect" alt="" />'.
 							'</a>'.
 							'</td>';
 				$tCells[]='<td>'.htmlspecialchars($rec['error']).'</td>';
 				$tCells[]='<td>'.
 								($rec['last_referer'] ? '<a href="'.htmlspecialchars($rec['last_referer']).'" target="_blank">'.htmlspecialchars($rec['last_referer']).'</a>' : '&nbsp;').
 								'</td>';
-				$tCells[]='<td>'.t3lib_BEfunc::datetime($rec['cr_date']).'</td>';
+				$tCells[]='<td>'.\TYPO3\CMS\Backend\Utility\BackendUtility::datetime($rec['cr_date']).'</td>';
 
 					// Compile Row:
 				$output.= '
@@ -1439,7 +1439,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 			$output = '
 			<br/>
 				<a href="'.$this->linkSelf('&cmd=deleteAll').'">'.
-				'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete All" alt="" />'.
+				'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete All" alt="" />'.
 				' Flush log</a>
 				<br/>
 			<table border="0" cellspacing="1" cellpadding="0" id="tx-realurl-pathcacheTable" class="lrPadding c-list">'.$output.'
@@ -1493,7 +1493,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 
 	protected function getRedirectsSearch() {
 		$result = $this->getSearchField();
-		if (t3lib_div::_GP('pathPrefixSearch')) {
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('pathPrefixSearch')) {
 			$result .= ' <input type="reset" name="_" value="' .
 				$GLOBALS['LANG']->getLL('show_all', true) . '" ' .
 				'onclick="document.getElementById(\'pathPrefixSearch\').value=\'\';document.forms[0].submit()" ' .
@@ -1514,11 +1514,11 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	protected function getRedirectsTableContent($sortingParameter, $sortingDirection) {
 		$itemCounter = 0;
 
-		$page = max(1, intval(t3lib_div::_GP('page')));
+		$page = max(1, intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('page')));
 		$resultsPerPage = $this->getResultsPerPage('redirects');
 
 		$condition = '';
-		$seachPath = t3lib_div::_GP('pathPrefixSearch');
+		$seachPath = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('pathPrefixSearch');
 		if ($seachPath) {
 			$seachPathDecoded = $GLOBALS['TYPO3_DB']->quoteStr(
 				$GLOBALS['TYPO3_DB']->escapeStrForLike(rawurlencode($seachPath), 'tx_realurl_redirects'),
@@ -1557,7 +1557,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 			'COUNT(*) AS t', 'tx_realurl_redirects', $condition);
 		$totalResults = $count['t'];
 		if ($totalResults > $resultsPerPage) {
-			$pageBrowser = t3lib_div::makeInstance('tx_realurl_pagebrowser');
+			$pageBrowser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_realurl_pagebrowser');
 			/** @var tx_realurl_pagebrowser $pageBrowser */
 			$results = sprintf($GLOBALS['LANG']->getLL('displaying_results'),
 				$start + 1, min($totalResults, ($start + $resultsPerPage)), $totalResults);
@@ -1577,9 +1577,9 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 * @return int
 	 */
 	protected function getResultsPerPage($view) {
-		$tsConfig = t3lib_BEfunc::getModTSconfig($this->pObj->id, 'tx_realurl.' . $view . '.pagebrowser.resultsPerPage');
+		$tsConfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getModTSconfig($this->pObj->id, 'tx_realurl.' . $view . '.pagebrowser.resultsPerPage');
 		$resultsPerPage = $tsConfig['value'];
-		return tx_realurl::testInt($resultsPerPage) ? intval($resultsPerPage) : tx_realurl_pagebrowser::RESULTS_PER_PAGE_DEFAULT;
+		return \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($resultsPerPage) ? intval($resultsPerPage) : tx_realurl_pagebrowser::RESULTS_PER_PAGE_DEFAULT;
 	}
 
 	/**
@@ -1592,21 +1592,21 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	protected function generateSingleRedirectContent(array $rec, $page) {
 		$output = '<td>'.
 					'<a href="'.$this->linkSelf('&cmd=edit&uid=' . rawurlencode($rec['uid'])) . '&page='.$page.'">'.
-					'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="Edit entry" alt="" />'.
+					'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="Edit entry" alt="" />'.
 					'</a>'.
 					'<a href="'.$this->linkSelf('&cmd=delete&uid=' . rawurlencode($rec['uid'])) . '&page='.$page.'">'.
-					'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entry" alt="" />'.
+					'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entry" alt="" />'.
 					'</a>'.
 				'</td>';
-		$output .= sprintf( '<td><a href="%s" target="_blank">/%s</a></td>', htmlspecialchars(t3lib_div::getIndpEnv('TYPO3_SITE_URL').$rec['url']), htmlspecialchars($rec['url']) );
+		$output .= sprintf( '<td><a href="%s" target="_blank">/%s</a></td>', htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL').$rec['url']), htmlspecialchars($rec['url']) );
 		$destinationURL = $this->getDestinationRedirectURL($rec['destination']);
-		$output .= sprintf('<td><a href="%1$s" target="_blank" title="%1$s">%2$s</a></td>', htmlspecialchars($destinationURL), htmlspecialchars(t3lib_div::fixed_lgd_cs($destinationURL, 30)));
+		$output .= sprintf('<td><a href="%1$s" target="_blank" title="%1$s">%2$s</a></td>', htmlspecialchars($destinationURL), htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($destinationURL, 30)));
 		$output .= '<td>' . htmlspecialchars($this->getRedirectDomain($rec['domain_limit'])) . '</td>';
 		$output .= '<td align="center">'.($rec['has_moved'] ? '+' : '&nbsp;').'</td>';
 		$output .= '<td align="center">'.$rec['counter'].'</td>';
 
 		if ($rec['tstamp']) {
-			$output .= '<td>' . t3lib_BEfunc::dateTimeAge($rec['tstamp']) . '</td>';
+			$output .= '<td>' . \TYPO3\CMS\Backend\Utility\BackendUtility::dateTimeAge($rec['tstamp']) . '</td>';
 		}
 		else {
 			$output .= '<td align="center">&mdash;</td>';
@@ -1678,10 +1678,10 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 */
 	protected function getRedirectViewSortingParameters() {
 		session_start();
-		$gpVars = t3lib_div::_GP('SET');
+		$gpVars = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('SET');
 		if (isset($gpVars['ob'])) {
 			$sortingParameter = $gpVars['ob'];
-			if (!t3lib_div::inList('url,destination,domain_limit,has_moved,counter,last_referer', $sortingParameter)) {
+			if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList('url,destination,domain_limit,has_moved,counter,last_referer', $sortingParameter)) {
 				$sortingParameter = '';
 				$sortingDirection = '';
 			}
@@ -1708,7 +1708,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 * @return string
 	 */
 	protected function processRedirectActions() {
-		switch (t3lib_div::_GP('cmd')) {
+		switch (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cmd')) {
 			case 'new':
 			case 'edit':
 				$output = $this->getProcessForm();
@@ -1730,7 +1730,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 * @return	void
 	 */
 	protected function deleteRedirectEntry() {
-		$uid = t3lib_div::_GP('uid');
+		$uid = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('uid');
 		if ($uid) {
 			$GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_realurl_redirects',
 				'uid=' . intval($uid)
@@ -1745,7 +1745,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 */
 	protected function getNewButton() {
 		$content = '<div style="margin:0 0 0.5em 3px"><a href="'.$this->linkSelf('&cmd=new').'">'.
-			'<img'.t3lib_iconWorks::skinImg($this->pObj->doc->backPath,'gfx/new_el.gif','width="11" height="12"').' title="New entry" alt="" />'.
+			'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/new_el.gif','width="11" height="12"').' title="New entry" alt="" />'.
 			' Add new redirects</a></div>';
 		return $content;
 	}
@@ -1758,7 +1758,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 */
 	protected function getProcessForm() {
 		$content = $error = '';
-		if (!t3lib_div::_POST('_edit_cancel')) {
+		if (!\TYPO3\CMS\Core\Utility\GeneralUtility::_POST('_edit_cancel')) {
 			if ($this->processRedirectSubmission($error)) {
 				// Submission successful -- show "New" button
 				$content = $this->getNewButton();
@@ -1771,7 +1771,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 				$hint = '<div style="margin:.5em 0">' .
 					'Note: the exact source URL will match! Add a slash to the end ' .
 					'of the URL if necessary!</div>';
-				if (!t3lib_div::_GP('uid')) {
+				if (!\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('uid')) {
 					$content .= '<h2>Add new redirects</h2>' . $error . $hint .
 						$this->getRedirectNewForm();
 				}
@@ -1779,7 +1779,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 					$content .= '<h2>Edit a redirect</h2>' . $error . $hint . $this->getRedirectEditForm();
 				}
 				$content .= '<input type="hidden" name="id" value="'.htmlspecialchars($this->pObj->id).'" />';
-				$content .= '<input type="hidden" name="cmd" value="'.htmlspecialchars(t3lib_div::_GP('cmd')).'" />';
+				$content .= '<input type="hidden" name="cmd" value="'.htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cmd')).'" />';
 			}
 		}
 		return $content;
@@ -1793,12 +1793,12 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 */
 	protected function getRedirectEditForm() {
 		$content = '';
-		$uid = t3lib_div::_GP('uid');
+		$uid = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('uid');
 		list($row) = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'url,url_hash,destination,has_moved,domain_limit', 'tx_realurl_redirects',
 			'uid=' . intval($uid));
 		if (is_array($row)) {
-			$page = max(1, intval(t3lib_div::_GP('page')));
+			$page = max(1, intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('page')));
 			$content = '<table border="0" cellspacing="2" cellpadding="1" style="margin-bottom:1em">' .
 				'<tr><td>Redirect from:</td>' .
 				'<td width="1">/</td><td><input type="text" name="data[0][source]" value="' . htmlspecialchars($row['url']) . '" size="40" /></td></tr>' .
@@ -1830,7 +1830,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 		$content .= '<tr class="bgColor5 tableheader"><td>Source URL</td><td>Destination URL:</td><td>Domain:</td><td>Permanent:</td></tr>';
 
 		// Show fields
-		$data = t3lib_div::_GP('data');
+		$data = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('data');
 		$max = count($data);
 		if (!is_array($data)) {
 			$data = array();
@@ -1886,8 +1886,8 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 	 */
 	protected function processRedirectSubmission(&$error) {
 		$result = false; $error = '';
-		if (t3lib_div::_GP('_edit_save')) {
-			$data = t3lib_div::_GP('data');
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('_edit_save')) {
+			$data = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('data');
 			$databaseUpdateData = array();
 			$databaseInsertData = array();
 			foreach ($data as $fields) {
@@ -1927,7 +1927,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 				if ($fields['url_hash'] == '') {
 					// New entry
 					$databaseInsertData[] = array(
-						'url_hash' => t3lib_div::md5int($fields['source']),
+						'url_hash' => \TYPO3\CMS\Core\Utility\GeneralUtility::md5int($fields['source']),
 						'url' => $fields['source'],
 						'destination' => $fields['target'],
 						'has_moved' => $fields['permanent'] ? 1 : 0,
@@ -1937,7 +1937,7 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 				else {
 					// Existing entry
 					$databaseUpdateData[$fields['uid']] = array(
-						'url_hash' => t3lib_div::md5int($fields['source']),
+						'url_hash' => \TYPO3\CMS\Core\Utility\GeneralUtility::md5int($fields['source']),
 						'url' => $fields['source'],
 						'destination' => $fields['target'],
 						'has_moved' => $fields['permanent'] ? 1 : 0,
@@ -1976,10 +1976,3 @@ class tx_realurl_modfunc1 extends t3lib_extobjbase {
 		return $url;
 	}
 }
-
-
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/realurl/modfunc1/class.tx_realurl_modfunc1.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/realurl/modfunc1/class.tx_realurl_modfunc1.php']);
-}
-?>

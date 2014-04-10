@@ -168,7 +168,7 @@ class tx_realurl_tcemain {
 	 * @return void
 	 */
 	protected function fetchRealURLConfiguration($pageId) {
-		$rootLine = t3lib_BEfunc::BEgetRootLine($pageId);
+		$rootLine = \TYPO3\CMS\Backend\Utility\BackendUtility::BEgetRootLine($pageId);
 		$rootPageId = $rootLine[1]['uid'];
 		$this->config = array();
 		if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl'])) {
@@ -183,7 +183,7 @@ class tx_realurl_tcemain {
 			}
 		}
 		else {
-			t3lib_div::sysLog('RealURL is not configured! Please, configure it or uninstall.', 'RealURL', 3);
+			\TYPO3\CMS\Core\Utility\GeneralUtility::sysLog('RealURL is not configured! Please, configure it or uninstall.', 'RealURL', 3);
 		}
 	}
 
@@ -197,7 +197,7 @@ class tx_realurl_tcemain {
 		$children  = array();
 
 		/** @var $tree t3lib_pageTree */
-		$tree = t3lib_div::makeInstance('t3lib_pageTree');
+		$tree = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Tree\\View\\PageTreeView');
 		$tree->init('AND ' . $GLOBALS['BE_USER']->getPagePermsClause(1));
 		$this->makeHTML = FALSE;
 		$tree->getTree($pageId, 99, '');
@@ -256,7 +256,7 @@ class tx_realurl_tcemain {
 			}
 		}
 		$fieldList .= ',hidden';
-		return array_unique(t3lib_div::trimExplode(',', $fieldList, true));
+		return array_unique(\TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $fieldList, true));
 	}
 
 	/**
@@ -323,7 +323,7 @@ class tx_realurl_tcemain {
 	 * @todo Handle changes to tx_realurl_exclude recursively
 	 */
 	protected function processContentUpdates($status, $tableName, $recordId, array $databaseData) {
-		if ($status == 'update' && tx_realurl::testInt($recordId)) {
+		if ($status == 'update' && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($recordId)) {
 			list($pageId, $languageId) = $this->getPageData($tableName, $recordId);
 			$this->fetchRealURLConfiguration($pageId);
 			if ($this->shouldFixCaches($tableName, $databaseData)) {

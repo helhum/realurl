@@ -47,17 +47,16 @@ class tx_realurl_pagebrowser {
 	protected $resultsPerPage;
 
 	/**
-	 * Creates an isntance of this class.
-	 *
-	 * @return void
+	 * Constructor
 	 */
 	public function __construct() {
-		$urlParameters = t3lib_div::array_merge_recursive_overrule($_GET, $_POST);
+		$urlParameters = $_GET;
+		\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($urlParameters, $_POST);
 		$this->currentPage = max(1, intval($urlParameters['page']));
 		unset($urlParameters['page']);
 		unset($urlParameters['cmd']);
-		$this->baseURL = t3lib_div::getIndpEnv('TYPO3_REQUEST_SCRIPT') .
-			'?' . t3lib_div::implodeArrayForUrl('', $urlParameters);
+		$this->baseURL = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_REQUEST_SCRIPT') .
+			'?' . \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $urlParameters);
 		$this->resultsPerPage = self::RESULTS_PER_PAGE_DEFAULT;
 	}
 
@@ -142,9 +141,3 @@ class tx_realurl_pagebrowser {
 	}
 
 }
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/realurl/modfunc1/class.tx_realurl_pagebrowser.php'])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/realurl/modfunc1/class.tx_realurl_pagebrowser.php']);
-}
-
-?>

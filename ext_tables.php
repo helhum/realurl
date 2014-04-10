@@ -2,13 +2,13 @@
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
 if (TYPO3_MODE=='BE')	{
-//	t3lib_extMgm::addModule('tools','txrealurlM1','',t3lib_extMgm::extPath($_EXTKEY).'mod1/');
+//	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule('tools','txrealurlM1','',\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'mod1/');
 
 	// Add Web>Info module:
-	t3lib_extMgm::insertModuleFunction(
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::insertModuleFunction(
 		'web_info',
 		'tx_realurl_modfunc1',
-		t3lib_extMgm::extPath($_EXTKEY) . 'modfunc1/class.tx_realurl_modfunc1.php',
+		'',
 		'LLL:EXT:realurl/locallang_db.xml:moduleFunction.tx_realurl_modfunc1',
 		'function',
 		'online'
@@ -16,7 +16,7 @@ if (TYPO3_MODE=='BE')	{
 }
 
 if (version_compare(TYPO3_branch, '6.1', '<')) {
-	t3lib_div::loadTCA('pages');
+	\TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA('pages');
 }
 $TCA['pages']['columns'] += array(
 	'tx_realurl_pathsegment' => array(
@@ -67,21 +67,21 @@ $TCA['pages']['palettes']['137'] = array(
 	'showitem' => 'tx_realurl_pathoverride'
 );
 
-if (t3lib_div::compat_version('4.3')) {
-	t3lib_extMgm::addFieldsToPalette('pages', '3', 'tx_realurl_nocache', 'after:cache_timeout');
+if (\TYPO3\CMS\Core\Utility\GeneralUtility::compat_version('4.3')) {
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette('pages', '3', 'tx_realurl_nocache', 'after:cache_timeout');
 }
-if (t3lib_div::compat_version('4.2')) {
+if (\TYPO3\CMS\Core\Utility\GeneralUtility::compat_version('4.2')) {
 	// For 4.2 or new add fields to advanced page only
-	t3lib_extMgm::addToAllTCAtypes('pages', 'tx_realurl_pathsegment;;137;;,tx_realurl_exclude', '1', 'after:nav_title');
-	t3lib_extMgm::addToAllTCAtypes('pages', 'tx_realurl_pathsegment;;137;;,tx_realurl_exclude', '4,199,254', 'after:title');
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages', 'tx_realurl_pathsegment;;137;;,tx_realurl_exclude', '1', 'after:nav_title');
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages', 'tx_realurl_pathsegment;;137;;,tx_realurl_exclude', '4,199,254', 'after:title');
 }
 else {
 	// Put it for standard page
-	t3lib_extMgm::addToAllTCAtypes('pages', 'tx_realurl_pathsegment;;137;;,tx_realurl_exclude', '2', 'after:nav_title');
-	t3lib_extMgm::addToAllTCAtypes('pages', 'tx_realurl_pathsegment;;137;;,tx_realurl_exclude', '1,5,4,199,254', 'after:title');
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages', 'tx_realurl_pathsegment;;137;;,tx_realurl_exclude', '2', 'after:nav_title');
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages', 'tx_realurl_pathsegment;;137;;,tx_realurl_exclude', '1,5,4,199,254', 'after:title');
 }
 
-t3lib_extMgm::addLLrefForTCAdescr('pages','EXT:realurl/locallang_csh.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('pages','EXT:realurl/locallang_csh.xml');
 
 $TCA['pages_language_overlay']['columns'] += array(
 	'tx_realurl_pathsegment' => array(
@@ -95,6 +95,6 @@ $TCA['pages_language_overlay']['columns'] += array(
 	),
 );
 
-t3lib_extMgm::addToAllTCAtypes('pages_language_overlay', 'tx_realurl_pathsegment', '', 'after:nav_title');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages_language_overlay', 'tx_realurl_pathsegment', '', 'after:nav_title');
 
 ?>

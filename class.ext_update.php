@@ -50,7 +50,7 @@ class ext_update {
 	 * @return	string		HTML output
 	 */
 	public function main() {
-		if (t3lib_div::_POST('nssubmit') != '') {
+		if (\TYPO3\CMS\Core\Utility\GeneralUtility::_POST('nssubmit') != '') {
 			$this->updateOverridePaths();
 			$content = 'Update finished successfully.';
 		}
@@ -67,7 +67,7 @@ class ext_update {
 	 */
 	protected function prompt() {
 		return
-			'<form action="' . t3lib_div::getIndpEnv('REQUEST_URI') . '" method="POST">' .
+			'<form action="' . \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI') . '" method="POST">' .
 			'<p>This update will do the following:</p>' .
 			'<ul>' .
 			'<li>Import path overrides from aoe_realurlpath</li>' .
