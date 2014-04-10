@@ -1,0 +1,4 @@
+deny from all
+<FilesMatch "^ext_icon\.(gif|png)$">
+allow from all
+</FilesMatch>
