@@ -29,6 +29,7 @@ namespace Tx\Realurl\Hooks;
  ***************************************************************/
 
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -1167,15 +1168,15 @@ class UrlRewritingHook implements SingletonInterface {
 		// Merge Get vars together
 		$cachedInfo['GET_VARS'] = array();
 		if (is_array($pre_GET_VARS))
-			$cachedInfo['GET_VARS'] = \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule($cachedInfo['GET_VARS'], $pre_GET_VARS);
+			ArrayUtility::mergeRecursiveWithOverrule($cachedInfo['GET_VARS'], $pre_GET_VARS);
 		if (is_array($id_GET_VARS))
-			$cachedInfo['GET_VARS'] = \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule($cachedInfo['GET_VARS'], $id_GET_VARS);
+			ArrayUtility::mergeRecursiveWithOverrule($cachedInfo['GET_VARS'], $id_GET_VARS);
 		if (is_array($fixedPost_GET_VARS))
-			$cachedInfo['GET_VARS'] = \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule($cachedInfo['GET_VARS'], $fixedPost_GET_VARS);
+			ArrayUtility::mergeRecursiveWithOverrule($cachedInfo['GET_VARS'], $fixedPost_GET_VARS);
 		if (is_array($post_GET_VARS))
-			$cachedInfo['GET_VARS'] = \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule($cachedInfo['GET_VARS'], $post_GET_VARS);
+			ArrayUtility::mergeRecursiveWithOverrule($cachedInfo['GET_VARS'], $post_GET_VARS);
 		if (is_array($file_GET_VARS))
-			$cachedInfo['GET_VARS'] = \TYPO3\CMS\Core\Utility\GeneralUtility::array_merge_recursive_overrule($cachedInfo['GET_VARS'], $file_GET_VARS);
+			ArrayUtility::mergeRecursiveWithOverrule($cachedInfo['GET_VARS'], $file_GET_VARS);
 
 		// cHash handling
 		if ($cHashCache) {
