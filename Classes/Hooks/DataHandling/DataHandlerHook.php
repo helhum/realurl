@@ -306,11 +306,12 @@ class DataHandlerHook implements SingletonInterface {
 	 * @param string $tableName
 	 * @param int $recordId
 	 * @param array $databaseData
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
 	 * @return void
 	 * @todo Expire unique alias cache: how to get the proper timeout value easily here?
 	 */
-	public function processDatamap_afterDatabaseOperations($status, $tableName, $recordId, array $databaseData) {
-		$this->processContentUpdates($status, $tableName, $recordId, $databaseData);
+	public function processDatamap_afterDatabaseOperations($status, $tableName, $recordId, array $databaseData, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler) {
+		$this->processContentUpdates($status, $tableName, $recordId, $databaseData, $dataHandler);
 		$this->clearAutoConfiguration($tableName);
 	}
 
@@ -341,22 +342,26 @@ class DataHandlerHook implements SingletonInterface {
 	 * @param string $tableName
 	 * @param int $recordId
 	 * @param array $databaseData
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
 	 * @return void
 	 * @todo Handle changes to tx_realurl_exclude recursively
 	 */
-	protected function processContentUpdates($status, $tableName, $recordId, array $databaseData) {
-		if ($status == 'update' && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($recordId)) {
+	protected function processContentUpdates($status, $tableName, $recordId, array $databaseData, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler) {
+		if ($tableName !== 'pages' || $status == 'update') {
+			if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($recordId)) {
+				$recordId = intval($dataHandler->substNEWwithIDs[$recordId]);
+			}
 			list($pageId, $languageId) = $this->getPageData($tableName, $recordId);
 			$this->fetchRealURLConfiguration($pageId);
 			if ($this->shouldFixCaches($tableName, $databaseData)) {
 				if (isset($databaseData['alias'])) {
 					$this->expirePathCacheForAllLanguages($pageId);
-				}
-				else {
+				} else {
 					$this->expirePathCache($pageId, $languageId);
 				}
 				$this->clearOtherCaches($pageId);
 			}
+			$this->clearOtherCaches($pageId);
 		}
 	}
 
