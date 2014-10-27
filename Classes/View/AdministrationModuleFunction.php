@@ -807,7 +807,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 
 						// Delete:
 					$tCells[]='<td>'.
-							'<a href="'.$this->linkSelf('&cmd=deleteDC&entry=urlhash_'.intval($inf['url_hash'])).'">'.
+							'<a href="'.$this->linkSelf('&cmd=deleteDC&entry=urlhash_' . rawurlencode($inf['url_hash'])).'">'.
 							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entry" alt="" />'.
 							'</a>'.
 						'</td>';
@@ -959,14 +959,14 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 
 						// Delete:
 					$tCells[]='<td>'.
-							'<a href="'.$this->linkSelf('&cmd=deleteEC&entry=urlhash_'.intval($inf['url_hash'])).'">'.
+							'<a href="'.$this->linkSelf('&cmd=deleteEC&entry=urlhash_' . rawurlencode($inf['url_hash'])).'">'.
 							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entry" alt="" />'.
 							'</a>'.
 						'</td>';
 
 						// Error:
 					$eMsg = ($duplicates[$inf['content']] && $duplicates[$inf['content']] !== $row['row']['uid'] ? $this->pObj->doc->icons(2).'Already used on page ID '.$duplicates[$inf['content']].'<br/>' : '');
-					if (count($GLOBALS['TYPO3_DB']->exec_SELECTgetRows('url_hash','tx_realurl_redirects','url_hash='.intval(\TYPO3\CMS\Core\Utility\GeneralUtility::md5int($inf['content'])))))	{
+					if (count($GLOBALS['TYPO3_DB']->exec_SELECTgetRows('url_hash','tx_realurl_redirects','url_hash='.	intval(\TYPO3\CMS\Core\Utility\GeneralUtility::md5int($inf['content'])))))	{
 						$eMsg.= $this->pObj->doc->icons(3).'Also a redirect!';
 					}
 					$tCells[]='<td>'.$eMsg.'</td>';
@@ -1041,7 +1041,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 
 		list($keyword,$id) = explode('_', $cmd);
 
-		switch((string)$keyword)	{
+		switch((string)$keyword) {
 			case 'all':
 				$GLOBALS['TYPO3_DB']->exec_DELETEquery($table, '');
 			break;
@@ -1049,7 +1049,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 				$GLOBALS['TYPO3_DB']->exec_DELETEquery($table, 'page_id='.intval($id));
 			break;
 			case 'urlhash':
-				$GLOBALS['TYPO3_DB']->exec_DELETEquery($table, 'url_hash='.intval($id));
+				$GLOBALS['TYPO3_DB']->exec_DELETEquery($table, 'url_hash=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($id, $table));
 			break;
 			default:
 			break;
