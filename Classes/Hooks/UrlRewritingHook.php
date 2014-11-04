@@ -1294,7 +1294,7 @@ class UrlRewritingHook implements SingletonInterface {
 
 			// If a get string is created, then
 			if ($GET_string) {
-				$GET_VARS = false;
+				$GET_VARS = array();
 				parse_str($GET_string, $GET_VARS);
 				return $GET_VARS;
 			}
@@ -1361,7 +1361,7 @@ class UrlRewritingHook implements SingletonInterface {
 
 			// If a get string is created, then
 			if ($GET_string) {
-				$GET_VARS = false;
+				$GET_VARS = array();
 				parse_str($GET_string, $GET_VARS);
 				$this->decodeSpURL_fixMagicQuotes($GET_VARS);
 				$this->decodeSpURL_fixBrackets($GET_VARS);
@@ -1734,7 +1734,7 @@ class UrlRewritingHook implements SingletonInterface {
 	/**
 	 * Will exit after redirect to backend (with "&edit=...") if $this->decode_editInBackend is set
 	 *
-	 * @param	integer		Page id.
+	 * @param int $pageId
 	 * @return	void
 	 */
 	protected function decodeSpURL_jumpAdmin_goBackend($pageId) {
@@ -2695,7 +2695,10 @@ class UrlRewritingHook implements SingletonInterface {
 	}
 
 	/**
-	 * Fixes empty URL
+	 * Fixes empty URL.
+	 *
+	 * @param string $newUrl
+	 * @return string
 	 */
 	protected function fixEmptyUrl($newUrl) {
 		if (!strlen($newUrl)) {
