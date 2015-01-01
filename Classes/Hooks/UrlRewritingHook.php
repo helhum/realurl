@@ -34,7 +34,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class for creating and parsing Speaking Urls
- * This class interfaces with hooks in TYPO3 inside tslib_fe (for parsing speaking URLs to GET parameters) and in t3lib_tstemplate (for parsing GET parameters into a speaking URL)
+ * This class interfaces with hooks in TYPO3 inside \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController (for parsing speaking URLs to GET parameters) and in \TYPO3\CMS\Core\TypoScript\TemplateService (for parsing GET parameters into a speaking URL)
  *
  * @author Kasper Skaarhoj <kasper@typo3.com>
  * @author Dmitry Dulepov <dmitry@typo3.org>
@@ -161,7 +161,7 @@ class UrlRewritingHook implements SingletonInterface {
 
 	/************************************
 	 *
-	 * Translate parameters to a Speaking URL (t3lib_tstemplate::linkData)
+	 * Translate parameters to a Speaking URL (\TYPO3\CMS\Core\TypoScript\TemplateService::linkData)
 	 *
 	 ************************************/
 
@@ -196,9 +196,9 @@ class UrlRewritingHook implements SingletonInterface {
 
 	/**
 	 * Translates a URL with query string (GET parameters) into Speaking URL.
-	 * Called from t3lib_tstemplate::linkData
+	 * Called from \TYPO3\CMS\Core\TypoScript\TemplateService::linkData
 	 *
-	 * @param	array		Array of parameters from t3lib_tstemplate::linkData - the function creating all links inside TYPO3
+	 * @param	array		Array of parameters from \TYPO3\CMS\Core\TypoScript\TemplateService::linkData - the function creating all links inside TYPO3
 	 * @return	void
 	 */
 	public function encodeSpURL(&$params) {
@@ -2363,7 +2363,7 @@ class UrlRewritingHook implements SingletonInterface {
 	 * Adjusts the configuration used for RealURL processing, depending on a specific domain disposal.
 	 *
 	 * @param string $type Calling type of realurl (encode|decode)
-	 * @param array $params Parameters delivered to RealURL (e.g. from t3lib_TStemplate->linkData hook)
+	 * @param array $params Parameters delivered to RealURL (e.g. from \TYPO3\CMS\Core\TypoScript\TemplateService->linkData hook)
 	 * @return mixed Information required for further processing
 	 */
 	protected function adjustConfigurationByHost($type, $params = null) {
@@ -2390,7 +2390,7 @@ class UrlRewritingHook implements SingletonInterface {
 	 * Adjusts the configuration used for RealURL path encoding, depending on a specific domain disposal.
 	 *
 	 * @param array $configuration Configuration required to determine hosts while path encoding
-	 * @param array $params Parameters delivered to RealURL by t3lib_TStemplate->linkData hook
+	 * @param array $params Parameters delivered to RealURL by \TYPO3\CMS\Core\TypoScript\TemplateService->linkData hook
 	 * @return mixed Information required for further processing or false if something went wrong
 	 */
 	protected function adjustConfigurationByHostEncode($configuration, $params) {

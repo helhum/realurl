@@ -198,7 +198,7 @@ class DataHandlerHook implements SingletonInterface {
 	protected function getChildPages($pageId) {
 		$children  = array();
 
-		/** @var $tree t3lib_pageTree */
+		/** @var $tree \TYPO3\CMS\Backend\Tree\View\PageTreeView */
 		$tree = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Tree\\View\\PageTreeView');
 		$tree->init('AND ' . $GLOBALS['BE_USER']->getPagePermsClause(1));
 		$this->makeHTML = FALSE;

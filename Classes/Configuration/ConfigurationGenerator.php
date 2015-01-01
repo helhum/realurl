@@ -56,8 +56,8 @@ class ConfigurationGenerator {
 	public function generateConfiguration() {
 		$fileName = PATH_site . self::AUTOCONFIGURTION_FILE;
 
-		$lockObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_lock', $fileName, $GLOBALS['TYPO3_CONF_VARS']['SYS']['lockingMode']);
-		/** @var t3lib_lock $lockObject */
+		$lockObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Locking\\Locker', $fileName, $GLOBALS['TYPO3_CONF_VARS']['SYS']['lockingMode']);
+		/** @var \TYPO3\CMS\Core\Locking\Locker $lockObject */
 		$lockObject->setEnableLogging(FALSE);
 		$lockObject->acquireExclusiveLock();
 		$fd = @fopen($fileName, 'a+');
