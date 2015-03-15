@@ -20,12 +20,13 @@ $boot = function($extensionConfiguration) {
 	if (is_array($_realurl_conf)) {
 		$_realurl_conf_file = trim($_realurl_conf['configFile']);
 		if ($_realurl_conf_file && file_exists(PATH_site . $_realurl_conf_file)) {
+			/** @noinspection PhpIncludeInspection */
 			require_once PATH_site . $_realurl_conf_file;
 		}
 	}
 
 	$_realurl_conf_file = PATH_site . \Tx\Realurl\Configuration\ConfigurationGenerator::AUTOCONFIGURTION_FILE;
-	if (!isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl']) && file_exists($_realurl_conf_file)) {
+	if ($_realurl_conf['enableAutoConf'] && !isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl']) && file_exists($_realurl_conf_file)) {
 		require_once $_realurl_conf_file;
 	}
 
