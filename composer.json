@@ -1,5 +1,10 @@
 {
   "name": "dmitrydulepov/realurl",
   "type": "typo3-cms-extension",
-  "description": "Speaking URLs for TYPO3"
+  "description": "Speaking URLs for TYPO3",
+  "autoload": {
+    "psr-4": {
+      "Tx\\Realurl\\": "Classes"
+    }
+  }
 }
