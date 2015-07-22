@@ -26,7 +26,9 @@ namespace Tx\Realurl\View;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 /**
@@ -189,7 +191,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 			// Creating top icon; the current page
 		$tree->tree[] = array(
 			'row' => $treeStartingRecord,
-			'HTML' => \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIconForRecord('pages', $treeStartingRecord)
+			'HTML' => IconUtility::getSpriteIconForRecord('pages', $treeStartingRecord)
 		);
 
 		// Create the tree from starting point:
@@ -282,11 +284,11 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 					$baseRow = $row['row'];	// page row as base.
 					$onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick('&edit[pages]['.$row['row']['uid'].']=edit&columnsOnly=title,nav_title,alias,tx_realurl_pathsegment',$this->pObj->doc->backPath);
 					$editIcon = '<a href="#" onclick="'.htmlspecialchars($onClick).'">'.
-								'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="" alt="" />'.
+								IconUtility::getSpriteIcon('actions-document-open') .
 								'</a>';
 					$onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::viewOnClick($row['row']['uid'],$this->pObj->doc->backPath,'','','','');
 					$editIcon.= '<a href="#" onclick="'.htmlspecialchars($onClick).'">'.
-								'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/zoom.gif','width="12" height="12"').' title="" alt="" />'.
+								IconUtility::getSpriteIcon('actions-document-view') .
 								'</a>';
 
 					if ($inf['language_id']>0)	{	// For alternative languages, show another list of fields, form page overlay record:
@@ -296,11 +298,11 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 							$baseRow = array_merge($baseRow,$olRec);
 							$onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::editOnClick('&edit[pages_language_overlay]['.$olRec['uid'].']=edit&columnsOnly=title,nav_title',$this->pObj->doc->backPath);
 							$editIcon = '<a href="#" onclick="'.htmlspecialchars($onClick).'">'.
-										'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="" alt="" />'.
+
 										'</a>';
 							$onClick = \TYPO3\CMS\Backend\Utility\BackendUtility::viewOnClick($row['row']['uid'],$this->pObj->doc->backPath,'','','','&L='.$olRec['sys_language_uid']);
 							$editIcon.= '<a href="#" onclick="'.htmlspecialchars($onClick).'">'.
-										'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/zoom.gif','width="12" height="12"').' title="" alt="" />'.
+										IconUtility::getSpriteIcon('actions-document-open') .
 										'</a>';
 						} else {
 							$baseRow = array();
@@ -358,16 +360,16 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 					} else {
 						$tCells[]='<td>'.
 								'<a href="'.$this->linkSelf('&cmd=delete&entry='.$inf['cache_id']).'">'.
-								'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete" alt="" />'.
-								'</a>'.
+								IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete')) .
+									'</a>'.
 								'<a href="'.$this->linkSelf('&cmd=edit&entry='.$inf['cache_id']).'">'.
-								'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="Edit" alt="" />'.
+								IconUtility::getSpriteIcon('actions-document-open', array('title' => 'Edit')) .
 								'</a>'.
 								'<a href="'.$this->linkSelf('&pathPrefixSearch='.rawurlencode($inf['pagepath'])).'">'.
-								'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/napshot.gif','width="12" height="12"').' title="Use for search" alt="" />'.
+								IconUtility::getSpriteIcon('actions-system-tree-search-open', array('title' => 'Use for search')) .
 								'</a>'.
 								'<a href="'.$this->linkSelf('&cmd=copy&entry='.$inf['cache_id']).'">'.
-								'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/clip_copy.gif','width="12" height="12"').' title="Copy entry" alt="" />'.
+								IconUtility::getSpriteIcon('actions-edit-copy', array('title' => 'Copy entry')) .
 								'</a>'.
 								'</td>';
 					}
@@ -375,7 +377,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 								($inf['expire'] ? htmlspecialchars(\TYPO3\CMS\Backend\Utility\BackendUtility::dateTimeAge($inf['expire'],-1)) : '').
 								($inf['expire'] ?
 									'<a href="'.$this->linkSelf('&cmd=raiseExpire&entry='.$inf['cache_id']).'">'.
-									'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/up.gif','width="14" height="14"').' title="Set expire time to 30 days" alt="" />'.
+									IconUtility::getSpriteIcon('actions-view-list-collapse', array('title' => 'Set expire time to 30 days')) .
 									'</a>' : '').
 								'</td>';
 
@@ -422,15 +424,15 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 		$tCells[]='<td>Pagepath:</td>';
 		$tCells[]='<td>'.
 					'<a href="'.$this->linkSelf('&cmd=delete&entry=ALL').'" onclick="return confirm(\'Are you sure you want to flush all cached page paths?\');">'.
-					'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' alt="" />'.
+					IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete all')) .
 					'</a>'.
 					'<a href="'.$this->linkSelf('&cmd=edit&entry=ALL').'">'.
-					'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="" alt="" />'.
+					IconUtility::getSpriteIcon('actions-document-open', array('title' => 'Edit all')) .
 					'</a>'.
 					'</td>';
 		$tCells[]='<td>Expires:'.
 						'<a href="'.$this->linkSelf('&cmd=flushExpired').'">'.
-						'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Flush all expired" alt="" />'.
+						IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Flush all expired')) .
 						'</a>'.
 					'</td>';
 		$tCells[]='<td>Errors:</td>';
@@ -791,7 +793,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 						$tCells[]='<td nowrap="nowrap" rowspan="'.count($displayRows).'">'.$row['row']['uid'].'</td>';
 						$tCells[]='<td rowspan="'.count($displayRows).'">'.
 							'<a href="'.$this->linkSelf('&cmd=deleteDC&entry=page_'.intval($row['row']['uid'])).'">'.
-							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entries for page" alt="" />'.
+							IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete entries for page')) .
 							'</a>'.
 						'</td>';
 					}
@@ -808,7 +810,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 						// Delete:
 					$tCells[]='<td>'.
 							'<a href="'.$this->linkSelf('&cmd=deleteDC&entry=urlhash_' . rawurlencode($inf['url_hash'])).'">'.
-							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entry" alt="" />'.
+							IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete entry')) .
 							'</a>'.
 						'</td>';
 
@@ -849,12 +851,12 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 		$output = '<br/><br/>
 		Displayed entries: <b>'.$countDisplayed.'</b> '.
 			'<a href="'.$this->linkSelf('&cmd=deleteDC&entry=displayed').'">'.
-			'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete displayed entries" alt="" />'.
+			IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete displayed entries')) .
 			'</a>'.
 		'<br/>
 		Total entries in decode cache: <b>'.$count_allInTable['count'].'</b> '.
 			'<a href="'.$this->linkSelf('&cmd=deleteDC&entry=all').'">'.
-			'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete WHOLE decode cache!" alt="" />'.
+			IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete whole decode cache!')) .
 			'</a>'.
 		'<br/>
 		<table border="0" cellspacing="1" cellpadding="0" id="tx-realurl-pathcacheTable" class="lrPadding c-list">'.$output.'
@@ -943,7 +945,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 						$tCells[]='<td nowrap="nowrap" rowspan="'.count($displayRows).'">'.$row['row']['uid'].'</td>';
 						$tCells[]='<td rowspan="'.count($displayRows).'">'.
 							'<a href="'.$this->linkSelf('&cmd=deleteEC&entry=page_'.intval($row['row']['uid'])).'">'.
-							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entries for page" alt="" />'.
+							IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete entries for page')) .
 							'</a>'.
 						'</td>';
 					}
@@ -960,7 +962,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 						// Delete:
 					$tCells[]='<td>'.
 							'<a href="'.$this->linkSelf('&cmd=deleteEC&entry=urlhash_' . rawurlencode($inf['url_hash'])).'">'.
-							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entry" alt="" />'.
+						IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete entry')) .
 							'</a>'.
 						'</td>';
 
@@ -1018,12 +1020,12 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 		<br/>
 		Displayed entries: <b>'.$countDisplayed.'</b> '.
 			'<a href="'.$this->linkSelf('&cmd=deleteEC&entry=displayed').'">'.
-			'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete displayed entries" alt="" />'.
+			IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete displayed entries')) .
 			'</a>'.
 		'<br/>
 		Total entries in encode cache: <b>'.$count_allInTable['count'].'</b> '.
 			'<a href="'.$this->linkSelf('&cmd=deleteEC&entry=all').'">'.
-			'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete WHOLE encode cache!" alt="" />'.
+			IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete whole encode cache!')) .
 			'</a>'.
 		'<br/>
 		<table border="0" cellspacing="1" cellpadding="0" id="tx-realurl-pathcacheTable" class="lrPadding c-list">'.$output.'
@@ -1131,11 +1133,11 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 				$tCells[]='<td>'.
 								// Edit link:
 							'<a href="'.$this->linkSelf('&table='.rawurlencode($tableName).'&cmd=edit&entry='.$aliasRecord['uid']).'">'.
-							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="" alt="" />'.
+							IconUtility::getSpriteIcon('actions-document-open') .
 							'</a>'.
 								// Delete link:
 							'<a href="'.$this->linkSelf('&table='.rawurlencode($tableName).'&cmd=delete&entry='.$aliasRecord['uid']).'">'.
-							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="" alt="" />'.
+							IconUtility::getSpriteIcon('actions-edit-delete') .
 							'</a>'.
 							'</td>';
 
@@ -1166,15 +1168,15 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 			$tCells[]='<td>Lang:</td>';
 			$tCells[]='<td>Expire:'.
 						(!$search ? '<a href="'.$this->linkSelf('&table='.rawurlencode($tableName).'&cmd=flushExpired').'">'.
-						'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Flush expired" alt="" />'.
+							IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Flush expired')) .
 						'</a>' : '').
 						'</td>';
 			$tCells[]='<td>'.
 						(!$search ? '<a href="'.$this->linkSelf('&table='.rawurlencode($tableName).'&cmd=edit&entry=ALL').'">'.
-						'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="Edit all" alt="" />'.
+							IconUtility::getSpriteIcon('actions-document-open', array('title' => 'Edit all')) .
 						'</a>'.
 						'<a href="'.$this->linkSelf('&table='.rawurlencode($tableName).'&cmd=delete&entry=ALL').'" onclick="return confirm(\'Delete all?\');">'.
-						'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete all" alt="" />'.
+						IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete all')) .
 						'</a>' : '').
 						'</td>';
 			$tCells[]='<td>Error:</td>';
@@ -1371,7 +1373,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 				$tCells[]='<td>'.\TYPO3\CMS\Backend\Utility\BackendUtility::dateTimeAge($rec['tstamp']).'</td>';
 				$tCells[]='<td><a href="'.htmlspecialchars($host.'/'.$rec['url']).'" target="_blank">'.($host ? $host . '/' : '') . htmlspecialchars($rec['url']).'</a>'.
 							' <a href="'.$this->linkSelf('&cmd=new&data[0][source]='.rawurlencode($rec['url']).'&SET[type]=redirects').'">'.
-							'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/napshot.gif','width="12" height="12"').' title="Set as redirect" alt="" />'.
+							IconUtility::getSpriteIcon('actions-document-save', array('title' => 'Set as redirect')) .
 							'</a>'.
 							'</td>';
 				$tCells[]='<td>'.htmlspecialchars($rec['error']).'</td>';
@@ -1407,7 +1409,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 			$output = '
 			<br/>
 				<a href="'.$this->linkSelf('&cmd=deleteAll').'">'.
-				'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete All" alt="" />'.
+				IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete all')) .
 				' Flush log</a>
 				<br/>
 			<table border="0" cellspacing="1" cellpadding="0" id="tx-realurl-pathcacheTable" class="lrPadding c-list">'.$output.'
@@ -1560,10 +1562,10 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 	protected function generateSingleRedirectContent(array $rec, $page) {
 		$output = '<td>'.
 					'<a href="'.$this->linkSelf('&cmd=edit&uid=' . rawurlencode($rec['uid'])) . '&page='.$page.'">'.
-					'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/edit2.gif','width="11" height="12"').' title="Edit entry" alt="" />'.
+					IconUtility::getSpriteIcon('actions-document-open', array('title' => 'Edit entry')) .
 					'</a>'.
 					'<a href="'.$this->linkSelf('&cmd=delete&uid=' . rawurlencode($rec['uid'])) . '&page='.$page.'">'.
-					'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/garbage.gif','width="11" height="12"').' title="Delete entry" alt="" />'.
+					IconUtility::getSpriteIcon('actions-edit-delete', array('title' => 'Delete entry')) .
 					'</a>'.
 				'</td>';
 		$output .= sprintf( '<td><a href="%s" target="_blank">/%s</a></td>', htmlspecialchars(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL').$rec['url']), htmlspecialchars($rec['url']) );
@@ -1713,7 +1715,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
 	 */
 	protected function getNewButton() {
 		$content = '<div style="margin:0 0 0.5em 3px"><a href="'.$this->linkSelf('&cmd=new').'">'.
-			'<img'.\TYPO3\CMS\Backend\Utility\IconUtility::skinImg($this->pObj->doc->backPath,'gfx/new_el.gif','width="11" height="12"').' title="New entry" alt="" />'.
+			IconUtility::getSpriteIcon('actions-document-new', array('title' => 'New entry')) .
 			' Add new redirects</a></div>';
 		return $content;
 	}
