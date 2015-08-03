@@ -45,6 +45,17 @@ class DataHandlerHook implements SingletonInterface {
 	protected $config;
 
 	/**
+	 * @param array $parameters
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler
+	 */
+	public function clearCacheAll($parameters, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler ) {
+		if ($parameters['cacheCmd'] == 'all') {
+			$GLOBALS['TYPO3_DB']->exec_TRUNCATEquery('tx_realurl_urldecodecache');
+			$GLOBALS['TYPO3_DB']->exec_TRUNCATEquery('tx_realurl_urlencodecache');
+		}
+	}
+
+	/**
 	 * Removes autoconfiguration file if table name is sys_domain
 	 *
 	 * @param string $tableName

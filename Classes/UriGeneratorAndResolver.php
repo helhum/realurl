@@ -411,20 +411,64 @@ class UriGeneratorAndResolver implements SingletonInterface {
 		}
 		else {
 			$createCondition = $condition . ' AND expire=0';
-			/** @noinspection PhpUndefinedMethodInspection */
-			list($createCount) = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('COUNT(*) AS t',
-				'tx_realurl_pathcache', $createCondition);
-			if ($createCount['t'] == 0) {
-				$insertArray = array(
-					'page_id' => $pageId,
-					'language_id' => $langId,
-					'pagepath' => $currentPagePath,
-					'expire' => 0,
-					'rootpage_id' => $rootPageId,
-					'mpvar' => $mpvar
+
+			// check if there is already the same path with ignoring MPvar
+			$sameEntriesWithIgnoredMPvar = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+				'cache_id, mpvar',
+				'tx_realurl_pathcache',
+				'page_id=' . intval($pageId) .
+				' AND language_id=' . intval($langId) .
+				' AND rootpage_id=' . intval($rootPageId) .
+				' AND pagepath=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($currentPagePath, 'tx_realurl_pathcache') .
+				' AND expire=0'
+			);
+			$existingWithMPvar = FALSE;
+			$existingWithoutMPvar = FALSE;
+			if (is_array($sameEntriesWithIgnoredMPvar)) {
+				foreach ($sameEntriesWithIgnoredMPvar as $sameEntryWithIgnoredMPvar) {
+					if (!empty($sameEntryWithIgnoredMPvar['mpvar'])) {
+						$existingWithMPvar = TRUE;
+					} else {
+						$existingWithoutMPvar = TRUE;
+					}
+				}
+			}
+			$createCacheEntry = TRUE;
+
+			if ($existingWithoutMPvar && !empty($mpvar)) {
+				// simple avoid duplicate cache entry with different MPvar
+				$createCacheEntry = FALSE;
+			} elseif ($existingWithoutMPvar && empty($mpvar)) {
+				// is already present, must not be created again
+				$createCacheEntry = FALSE;
+			} elseif ($existingWithMPvar && empty($mpvar)) {
+				// remove the present ones
+				$GLOBALS['TYPO3_DB']->exec_DELETEquery(
+					'tx_realurl_pathcache',
+					'page_id=' . intval($pageId) .
+					' AND language_id=' . intval($langId) .
+					' AND rootpage_id=' . intval($rootPageId) .
+					' AND pagepath=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($currentPagePath, 'tx_realurl_pathcache') .
+					' AND expire=0'
 				);
+			}
+
+			if ($createCacheEntry) {
 				/** @noinspection PhpUndefinedMethodInspection */
-				$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_realurl_pathcache', $insertArray);
+				list($createCount) = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('COUNT(*) AS t',
+					'tx_realurl_pathcache', $createCondition);
+				if ($createCount['t'] == 0) {
+					$insertArray = array(
+						'page_id' => $pageId,
+						'language_id' => $langId,
+						'pagepath' => $currentPagePath,
+						'expire' => 0,
+						'rootpage_id' => $rootPageId,
+						'mpvar' => $mpvar
+					);
+					/** @noinspection PhpUndefinedMethodInspection */
+					$GLOBALS['TYPO3_DB']->exec_INSERTquery('tx_realurl_pathcache', $insertArray);
+				}
 			}
 		}
 
