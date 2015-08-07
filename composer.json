@@ -1,0 +1,24 @@
+{
+	"name": "helhum/realurl",
+	"type": "typo3-cms-extension",
+	"description": "RealURL: speaking paths for TYPO3",
+	"homepage": "http://typo3.org",
+	"license": "GPL-2.0+",
+
+	"require": {
+		"typo3/cms-core": ">=6.2.6,<8.0"
+	},
+	"replace": {
+		"realurl": "self.version"
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "2.0.x-dev"
+		}
+	},
+	"autoload": {
+		"psr-4": {
+			"Tx\\Realurl\\": "Classes"
+		}
+	}
+}
