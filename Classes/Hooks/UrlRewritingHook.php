@@ -1009,7 +1009,7 @@ class UrlRewritingHook implements SingletonInterface {
 
 				// Re-create QUERY_STRING from Get vars for use with typoLink()
 				$_SERVER['QUERY_STRING'] = $this->decodeSpURL_createQueryString($cachedInfo['GET_VARS']);
-				if (version_compare(TYPO3_branch, '7.5', '>=')) {
+				if (is_callable('TYPO3\\CMS\\Core\\Utility\\GeneralUtility::flushInternalRuntimeCaches')) {
 					\TYPO3\CMS\Core\Utility\GeneralUtility::flushInternalRuntimeCaches();
 				}
 
