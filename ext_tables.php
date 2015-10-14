@@ -26,6 +26,7 @@ $GLOBALS['TCA']['pages']['columns'] += array(
     ),
     'tx_realurl_pathoverride' => array(
         'label' => 'LLL:EXT:realurl/Resources/Private/Language/locallang_db.xml:pages.tx_realurl_path_override',
+        'displayCond' => 'FIELD:tx_realurl_exclude:!=:1',
         'exclude' => 1,
         'config' => array(
             'type' => 'check',
@@ -58,13 +59,17 @@ $GLOBALS['TCA']['pages']['columns'] += array(
 
 $GLOBALS['TCA']['pages']['ctrl']['requestUpdate'] .= ',tx_realurl_exclude';
 
-$GLOBALS['TCA']['pages']['palettes']['137'] = array(
-    'showitem' => 'tx_realurl_pathoverride'
+$GLOBALS['TCA']['pages']['palettes']['realurl'] = array(
+    'showitem' => '
+        tx_realurl_pathsegment,
+        --linebreak--,
+        tx_realurl_pathoverride,
+        --linebreak--,
+        tx_realurl_exclude
+    '
 );
 
-// Put it for standard page
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages', 'tx_realurl_pathsegment;;137;;,tx_realurl_exclude', '2', 'after:nav_title');
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages', 'tx_realurl_pathsegment;;137;;,tx_realurl_exclude', '1,5,4,199,254', 'after:title');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages', '--palette--;LLL:EXT:realurl/Resources/Private/Language/locallang_db.xml:pages.palette.realurl;realurl', '1,5,4,199,254', 'after:title');
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('pages', 'EXT:realurl/Resources/Private/Language/locallang_csh.xml');
 

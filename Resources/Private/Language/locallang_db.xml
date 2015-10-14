@@ -6,6 +6,7 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
+			<label index="pages.palette.realurl">Speaking URL</label>
 			<label index="pages.tx_realurl_pathsegment">Speaking URL path segment:</label>
 			<label index="pages.tx_realurl_exclude">Exclude from speaking URL:</label>
 			<label index="pages.tx_realurl_path_override">Override the whole page path</label>
