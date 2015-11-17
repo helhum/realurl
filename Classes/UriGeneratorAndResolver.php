@@ -1111,7 +1111,7 @@ class UriGeneratorAndResolver implements SingletonInterface {
 		$allTitles = array();
 		foreach ($segTitleFieldArray as $fieldName) {
 			if (is_array($titles[$fieldName])) {
-				$allTitles = GeneralUtility::array_merge($allTitles, $titles[$fieldName]);
+				$allTitles = $titles[$fieldName] + $allTitles;
 			}
 		}
 
