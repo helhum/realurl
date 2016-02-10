@@ -2673,7 +2673,9 @@ class UrlRewritingHook implements SingletonInterface {
 				$url .= $suffix;
 			}
 			else {
-				$url .= '/';
+				if ($this->extConf['init']['appendMissingSlash'] !== FALSE) {
+					$url .= '/';
+				}
 			}
 		}
 
