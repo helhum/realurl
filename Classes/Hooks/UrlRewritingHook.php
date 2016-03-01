@@ -2598,9 +2598,15 @@ class UrlRewritingHook implements SingletonInterface {
 		if (!$this->extConf['pagePath']['rootpage_id']) {
 
 			if ($this->enableStrictMode) {
-				$this->pObj->pageNotFoundAndExit('RealURL strict mode error: ' .
-					'multidomain configuration without rootpage_id. ' .
-					'Please, fix your RealURL configuration!');
+				if ($this->pObj) {
+					$this->pObj->pageNotFoundAndExit('RealURL strict mode error: ' .
+						'multidomain configuration without rootpage_id. ' .
+						'Please, fix your RealURL configuration!');
+				}
+				else {
+					throw new Exception('RealURL error: ' .
+						'unable to determine rootpage_id for the current domain.');
+				}
 			}
 
 			$this->getTimeTracker()->setTSlogMessage('RealURL warning: rootpage_id was not configured!');
@@ -2608,8 +2614,14 @@ class UrlRewritingHook implements SingletonInterface {
 			$this->extConf['pagePath']['rootpage_id'] = $this->findRootPageId();
 
 			if ($this->multidomain && !$this->extConf['pagePath']['rootpage_id']) {
-				$this->pObj->pageNotFoundAndExit('RealURL error: ' .
-					'unable to determine rootpage_id for the current domain.');
+				if ($this->pObj) {
+					$this->pObj->pageNotFoundAndExit('RealURL error: ' .
+						'unable to determine rootpage_id for the current domain.');
+				}
+				else {
+					throw new Exception('RealURL error: ' .
+						'unable to determine rootpage_id for the current domain.');
+				}
 			}
 		}
 	}
