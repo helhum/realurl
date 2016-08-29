@@ -29,7 +29,9 @@ namespace Tx\Realurl\Hooks;
  ***************************************************************/
 
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -213,14 +215,14 @@ class UrlRewritingHook implements SingletonInterface {
 			// Return directly, if simulateStaticDocuments is set
 			if ($GLOBALS['TSFE']->config['config']['simulateStaticDocuments']) {
 				/** @noinspection PhpUndefinedMethodInspection */
-				$GLOBALS['TT']->setTSlogMessage('SimulateStaticDocuments is enabled. RealURL disables itself.', 2);
+				GeneralUtility::makeInstance(TimeTracker::class)->setTSlogMessage('SimulateStaticDocuments is enabled. RealURL disables itself.', 2);
 				return;
 			}
 
 			// Return directly, if realurl is not enabled
 			if (!$GLOBALS['TSFE']->config['config']['tx_realurl_enable']) {
 				/** @noinspection PhpUndefinedMethodInspection */
-				$GLOBALS['TT']->setTSlogMessage('RealURL is not enabled in TS setup. Finished.');
+				GeneralUtility::makeInstance(TimeTracker::class)->setTSlogMessage('RealURL is not enabled in TS setup. Finished.');
 				return;
 			}
 		}
