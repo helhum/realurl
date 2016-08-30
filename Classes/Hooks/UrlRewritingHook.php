@@ -2797,7 +2797,7 @@ class UrlRewritingHook implements SingletonInterface {
 	protected function getTimeTracker() {
 		if (is_object($GLOBALS['TT'])) {
 			// @deprecated since 8.0, will be removed once 7.6 support will be removed
-		    return $GLOBALS['TT'];
+			return $GLOBALS['TT'];
 		}
 		return GeneralUtility::makeInstance(TimeTracker::class);
 	}
