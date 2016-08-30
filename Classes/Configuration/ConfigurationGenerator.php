@@ -26,6 +26,7 @@ namespace Tx\Realurl\Configuration;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+
 use TYPO3\CMS\Core\Locking\LockFactory;
 use TYPO3\CMS\Core\Locking\LockingStrategyInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -58,14 +59,19 @@ class ConfigurationGenerator {
 	 */
 	public function generateConfiguration() {
 		$fileName = PATH_site . self::AUTOCONFIGURTION_FILE;
-
-		/** @var LockFactory $lockFactory */
-		$lockFactory = GeneralUtility::makeInstance(LockFactory::class);
-		$lockObject = $lockFactory->createLocker(
-			$fileName,
-			LockingStrategyInterface::LOCK_CAPABILITY_EXCLUSIVE | LockingStrategyInterface::LOCK_CAPABILITY_NOBLOCK
-        	);
-		$lockObject->acquire();
+		if (class_exists('TYPO3\\CMS\\Core\\Locking\\LockFactory')) {
+			$lockFactory = GeneralUtility::makeInstance(LockFactory::class);
+			$lockObject = $lockFactory->createLocker(
+				$fileName,
+				LockingStrategyInterface::LOCK_CAPABILITY_EXCLUSIVE | LockingStrategyInterface::LOCK_CAPABILITY_NOBLOCK
+				);
+			$lockObject->acquire();
+		} else {
+			// @deprecated since 7.6, will be removed once 6.2 support is removed
+			$lockObject = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Locking\\Locker', $fileName, $GLOBALS['TYPO3_CONF_VARS']['SYS']['lockingMode']);
+			$lockObject->setEnableLogging(FALSE);
+			$lockObject->acquireExclusiveLock();
+		}
 		$fd = @fopen($fileName, 'a+');
 		if ($fd) {
 			// Check size
