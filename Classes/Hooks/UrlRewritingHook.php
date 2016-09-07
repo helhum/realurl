@@ -799,34 +799,19 @@ class UrlRewritingHook implements SingletonInterface {
 		if (isset($paramKeyValues['cHash'])) {
 
 			if ($this->rebuildCHash) {
-				$cacheHashClassExists = class_exists('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
-				$cacheHash = ($cacheHashClassExists ? \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator') : NULL);
-				/* @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHash */
+				/* @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHashCalculator */
+				$cacheHashCalculator = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
 
 				$cHashParameters = array_merge($this->cHashParameters, $paramKeyValues);
 				unset($cHashParameters['cHash']);
-				$cHashParameters = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $cHashParameters);
-				if ($cacheHashClassExists) {
-					$cHashParameters = $cacheHash->getRelevantParameters($cHashParameters);
-				} else {
-					/** @noinspection PhpUndefinedMethodInspection PhpDeprecationInspection */
-					$cHashParameters = \TYPO3\CMS\Core\Utility\GeneralUtility::cHashParams($cHashParameters);
-				}
+				$cHashParameters = $cacheHashCalculator->getRelevantParameters(\TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $cHashParameters));
 				unset($cHashParameters['']);
 				if (count($cHashParameters) == 1) {
 					// No cHash needed.
 					unset($paramKeyValues['cHash']);
 				}
 				elseif (count($cHashParameters) > 1) {
-					if ($cacheHashClassExists) {
-						$paramKeyValues['cHash'] = $cacheHash->calculateCacheHash($cHashParameters);
-					} elseif (method_exists('\TYPO3\CMS\Core\Utility\GeneralUtility', 'calculateCHash')) {
-						/** @noinspection PhpUndefinedMethodInspection PhpDeprecationInspection */
-						$paramKeyValues['cHash'] = \TYPO3\CMS\Core\Utility\GeneralUtility::calculateCHash($cHashParameters);
-					} else {
-						/** @noinspection PhpUndefinedMethodInspection PhpDeprecationInspection */
-						$paramKeyValues['cHash'] = \TYPO3\CMS\Core\Utility\GeneralUtility::shortMD5(serialize($cHashParameters));
-					}
+					$paramKeyValues['cHash'] = $cacheHashCalculator->calculateCacheHash($cHashParameters);
 				}
 				unset($cHashParameters);
 			}
@@ -1183,15 +1168,9 @@ class UrlRewritingHook implements SingletonInterface {
 		// cHash handling
 		if ($cHashCache) {
 			$queryString = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $cachedInfo['GET_VARS']);
-			$cacheHashClassExists = class_exists('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
-			if ($cacheHashClassExists) {
-				$cacheHash = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
-				/** @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHash */
-				$containsRelevantParametersForCHashCreation = count($cacheHash->getRelevantParameters(ltrim($queryString, '&'))) > 0;
-			} else {
-				/** @noinspection PhpUndefinedMethodInspection PhpDeprecationInspection */
-				$containsRelevantParametersForCHashCreation = count(\TYPO3\CMS\Core\Utility\GeneralUtility::cHashParams($queryString)) > 0;
-			}
+			/** @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHashCalculator */
+			$cacheHashCalculator = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
+			$containsRelevantParametersForCHashCreation = count($cacheHashCalculator->getRelevantParameters(ltrim($queryString, '&'))) > 0;
 
 			if ($containsRelevantParametersForCHashCreation) {
 				$cHash_value = $this->decodeSpURL_cHashCache($speakingURIpath);
