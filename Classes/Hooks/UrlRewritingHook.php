@@ -1156,7 +1156,7 @@ class UrlRewritingHook implements SingletonInterface {
 		}
 
 		// Merge Get vars together
-		$cachedInfo['GET_VARS'] = array();
+		$cachedInfo['GET_VARS'] = array('id' => $cachedInfo['id']);
 		if (is_array($pre_GET_VARS))
 			ArrayUtility::mergeRecursiveWithOverrule($cachedInfo['GET_VARS'], $pre_GET_VARS);
 		if (is_array($id_GET_VARS))
