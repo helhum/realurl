@@ -994,6 +994,7 @@ class UrlRewritingHook implements SingletonInterface {
 				}
 
 				// Re-create QUERY_STRING from Get vars for use with typoLink()
+				$cachedInfo['GET_VARS']['id'] = $cachedInfo['id'];
 				$_SERVER['QUERY_STRING'] = $this->decodeSpURL_createQueryString($cachedInfo['GET_VARS']);
 				if (is_callable('TYPO3\\CMS\\Core\\Utility\\GeneralUtility::flushInternalRuntimeCaches')) {
 					\TYPO3\CMS\Core\Utility\GeneralUtility::flushInternalRuntimeCaches();
@@ -1169,7 +1170,9 @@ class UrlRewritingHook implements SingletonInterface {
 
 		// cHash handling
 		if ($cHashCache) {
-			$queryString = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $cachedInfo['GET_VARS']);
+			$getVars = $cachedInfo['GET_VARS'];
+			$getVars['id'] = $cachedInfo['id'];
+			$queryString = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $getVars);
 			/** @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHashCalculator */
 			$cacheHashCalculator = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
 			$containsRelevantParametersForCHashCreation = count($cacheHashCalculator->getRelevantParameters(ltrim($queryString, '&'))) > 0;
