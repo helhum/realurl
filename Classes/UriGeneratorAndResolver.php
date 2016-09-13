@@ -159,7 +159,7 @@ class UriGeneratorAndResolver implements SingletonInterface {
 	 * @return mixed
 	 */
 	private function resolveAlias($pageId) {
-		if (!is_numeric($pageId)) {
+		if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($pageId)) {
 			$pageId = $GLOBALS['TSFE']->sys_page->getPageIdFromAlias($pageId);
 		}
 		return $pageId;
