@@ -30,50 +30,54 @@ namespace Tx\Realurl\ViewHelpers;
  *
  * @author Dmitry Dulepov <dmitry.dulepov@gmail.com>
  */
-class PageBrowserViewHelper {
-	const PAGES_BEFORE = 1;
-	const PAGES_BEFORE_END = 1;
-	const PAGES_AFTER = 1;
-	const PAGES_AFTER_START = 1;
-	const RESULTS_PER_PAGE_DEFAULT = 20;
+class PageBrowserViewHelper
+{
+    const PAGES_BEFORE = 1;
+    const PAGES_BEFORE_END = 1;
+    const PAGES_AFTER = 1;
+    const PAGES_AFTER_START = 1;
+    const RESULTS_PER_PAGE_DEFAULT = 20;
 
-	protected $currentPage;
-	protected $totalPages;
-	protected $baseURL;
-	protected $resultsPerPage;
+    protected $currentPage;
+    protected $totalPages;
+    protected $baseURL;
+    protected $resultsPerPage;
 
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		$urlParameters = $_GET;
-		\TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($urlParameters, $_POST);
-		$this->currentPage = max(1, intval($urlParameters['page']));
-		unset($urlParameters['page']);
-		unset($urlParameters['cmd']);
-		$this->baseURL = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_REQUEST_SCRIPT') .
-			'?' . \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $urlParameters);
-		$this->resultsPerPage = self::RESULTS_PER_PAGE_DEFAULT;
-	}
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $urlParameters = $_GET;
+        \TYPO3\CMS\Core\Utility\ArrayUtility::mergeRecursiveWithOverrule($urlParameters, $_POST);
+        $this->currentPage = max(1, intval($urlParameters['page']));
+        unset($urlParameters['page']);
+        unset($urlParameters['cmd']);
+        $this->baseURL = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_REQUEST_SCRIPT') .
+            '?' . \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $urlParameters);
+        $this->resultsPerPage = self::RESULTS_PER_PAGE_DEFAULT;
+    }
 
-	public function getPageBrowser($totalResults, $resultsPerPage = 0) {
-		if ($resultsPerPage) {
-			$this->resultsPerPage = $resultsPerPage;
-		}
-		$this->calcTotalPages($totalResults);
+    public function getPageBrowser($totalResults, $resultsPerPage = 0)
+    {
+        if ($resultsPerPage) {
+            $this->resultsPerPage = $resultsPerPage;
+        }
+        $this->calcTotalPages($totalResults);
 
-		$markup = '';
+        $markup = '';
 
-		if ($this->totalPages > 1) {
-			$markup = $this->generatePageBrowser();
-			$markup = '<table class="pagebrowser"><tr>' . $markup . '</tr></table>';
-		}
+        if ($this->totalPages > 1) {
+            $markup = $this->generatePageBrowser();
+            $markup = '<table class="pagebrowser"><tr>' . $markup . '</tr></table>';
+        }
 
-		return $markup;
-	}
+        return $markup;
+    }
 
-	static public function getInlineStyles() {
-		return '
+    public static function getInlineStyles()
+    {
+        return '
 			TABLE.pagebrowser {
 				margin-left: auto;
 			}
@@ -84,57 +88,60 @@ class PageBrowserViewHelper {
 				border: 1px solid #595d66;
 			}
 		';
-	}
+    }
 
-	protected function generatePageBrowser() {
-		$markup = '';
-		for ($page = 1; $page <= min($this->totalPages, $this->currentPage, self::PAGES_AFTER_START + 1); $page++) {
-			$markup .= $this->createCell($page);
-		}
+    protected function generatePageBrowser()
+    {
+        $markup = '';
+        for ($page = 1; $page <= min($this->totalPages, $this->currentPage, self::PAGES_AFTER_START + 1); $page++) {
+            $markup .= $this->createCell($page);
+        }
 
-		if ($page < $this->currentPage - self::PAGES_BEFORE) {
-			$markup .= $this->createEllipses();
-			$page = $this->currentPage - self::PAGES_BEFORE;
-		}
+        if ($page < $this->currentPage - self::PAGES_BEFORE) {
+            $markup .= $this->createEllipses();
+            $page = $this->currentPage - self::PAGES_BEFORE;
+        }
 
-		for ( ; $page <= min($this->totalPages, $this->currentPage + self::PAGES_AFTER); $page++) {
-			$markup .= $this->createCell($page);
-		}
+        for (; $page <= min($this->totalPages, $this->currentPage + self::PAGES_AFTER); $page++) {
+            $markup .= $this->createCell($page);
+        }
 
-		if ($page < $this->totalPages - self::PAGES_BEFORE_END) {
-			$markup .= $this->createEllipses();
-			$page = $this->totalPages - self::PAGES_BEFORE_END;
-		}
+        if ($page < $this->totalPages - self::PAGES_BEFORE_END) {
+            $markup .= $this->createEllipses();
+            $page = $this->totalPages - self::PAGES_BEFORE_END;
+        }
 
-		for ( ; $page <= $this->totalPages; $page++) {
-			$markup .= $this->createCell($page);
-		}
+        for (; $page <= $this->totalPages; $page++) {
+            $markup .= $this->createCell($page);
+        }
 
-		return $markup;
-	}
+        return $markup;
+    }
 
-	protected function createCell($pageNumber) {
-		$extraClass = '';
-		if ($pageNumber != $this->currentPage) {
-			$link = array(
-				'<a href="' . $this->baseURL . '&amp;page=' . $pageNumber . '">',
-				'</a>'
-			);
-		}
-		else {
-			$link = array('', '');
-			$extraClass = ' bgColor-20';
-		}
+    protected function createCell($pageNumber)
+    {
+        $extraClass = '';
+        if ($pageNumber != $this->currentPage) {
+            $link = array(
+                '<a href="' . $this->baseURL . '&amp;page=' . $pageNumber . '">',
+                '</a>'
+            );
+        } else {
+            $link = array('', '');
+            $extraClass = ' bgColor-20';
+        }
 
-		return '<td class="page' . $extraClass . '">' . $link[0] . $pageNumber . $link[1] . '</td>';
-	}
+        return '<td class="page' . $extraClass . '">' . $link[0] . $pageNumber . $link[1] . '</td>';
+    }
 
-	protected function createEllipses() {
-		return '<td>...</td>';
-	}
+    protected function createEllipses()
+    {
+        return '<td>...</td>';
+    }
 
-	protected function calcTotalPages($totalResults) {
-		$this->totalPages = intval($totalResults/$this->resultsPerPage) +
-			(($totalResults % $this->resultsPerPage) != 0 ? 1 : 0);
-	}
+    protected function calcTotalPages($totalResults)
+    {
+        $this->totalPages = intval($totalResults/$this->resultsPerPage) +
+            (($totalResults % $this->resultsPerPage) != 0 ? 1 : 0);
+    }
 }
