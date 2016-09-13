@@ -230,7 +230,7 @@ class DataHandlerHook implements SingletonInterface {
 	 * @return array First member is page id, second is language
 	 */
 	protected static function getPageData($tableName, $id) {
-		if ($tableName == 'pages_language_overlay') {
+		if ($tableName === 'pages_language_overlay') {
 			$result = self::getInfoFromOverlayPid($id);
 		}
 		else {
@@ -347,11 +347,11 @@ class DataHandlerHook implements SingletonInterface {
 	 * @todo Handle changes to tx_realurl_exclude recursively
 	 */
 	protected function processContentUpdates($status, $tableName, $recordId, array $databaseData, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler) {
-		if ($tableName !== 'pages' || $status == 'update') {
+		if ($tableName !== 'pages' || $status === 'update') {
 			if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($recordId)) {
 				$recordId = intval($dataHandler->substNEWwithIDs[$recordId]);
 			}
-			list($pageId, $languageId) = $this->getPageData($tableName, $recordId);
+			list($pageId, $languageId) = static::getPageData($tableName, $recordId);
 			$this->fetchRealURLConfiguration($pageId);
 			if ($this->shouldFixCaches($tableName, $databaseData)) {
 				if (isset($databaseData['alias'])) {
