@@ -106,7 +106,7 @@ class UrlRewritingHook implements SingletonInterface
     protected $detectedLanguage = -1;
 
     /**
-     * Inidicates wwether devLog is enabled
+     * Indicates whether devLog is enabled
      *
      * @var true
      */
@@ -114,7 +114,7 @@ class UrlRewritingHook implements SingletonInterface
 
     /**
      * Contains a request id. This is to simplify identification of a single
-     * request when the site is accessed concurently
+     * request when the site is accessed concurrently
      *
      * @var string
      */
