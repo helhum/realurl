@@ -1157,16 +1157,21 @@ class UrlRewritingHook implements SingletonInterface {
 
 		// Merge Get vars together
 		$cachedInfo['GET_VARS'] = array();
-		if (is_array($pre_GET_VARS))
+		if (is_array($pre_GET_VARS)) {
 			ArrayUtility::mergeRecursiveWithOverrule($cachedInfo['GET_VARS'], $pre_GET_VARS);
-		if (is_array($id_GET_VARS))
+		}
+		if (is_array($id_GET_VARS)) {
 			ArrayUtility::mergeRecursiveWithOverrule($cachedInfo['GET_VARS'], $id_GET_VARS);
-		if (is_array($fixedPost_GET_VARS))
+		}
+		if (is_array($fixedPost_GET_VARS)) {
 			ArrayUtility::mergeRecursiveWithOverrule($cachedInfo['GET_VARS'], $fixedPost_GET_VARS);
-		if (is_array($post_GET_VARS))
+		}
+		if (is_array($post_GET_VARS)) {
 			ArrayUtility::mergeRecursiveWithOverrule($cachedInfo['GET_VARS'], $post_GET_VARS);
-		if (is_array($file_GET_VARS))
+		}
+		if (is_array($file_GET_VARS)) {
 			ArrayUtility::mergeRecursiveWithOverrule($cachedInfo['GET_VARS'], $file_GET_VARS);
+		}
 
 		// cHash handling
 		if ($cHashCache) {
@@ -1220,7 +1225,7 @@ class UrlRewritingHook implements SingletonInterface {
 	 * @return string QUERY_STRING value
 	 */
 	protected function decodeSpURL_createQueryString(&$getVars) {
-		if (!is_array($getVars) || count($getVars) == 0) {
+		if (!is_array($getVars) || count($getVars) === 0) {
 			return $_SERVER['QUERY_STRING'];
 		}
 
