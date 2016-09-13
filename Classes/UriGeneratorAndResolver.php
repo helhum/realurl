@@ -780,7 +780,7 @@ class UriGeneratorAndResolver implements SingletonInterface {
 			}
 		}
 
-		return array(intval($id), $GET_VARS);
+		return array(intval($id ?: $startPid), $GET_VARS);
 	}
 
 	/**
