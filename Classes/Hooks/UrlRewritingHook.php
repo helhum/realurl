@@ -32,6 +32,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -200,8 +201,8 @@ class UrlRewritingHook implements SingletonInterface
      * Translates a URL with query string (GET parameters) into Speaking URL.
      * Called from \TYPO3\CMS\Core\TypoScript\TemplateService::linkData
      *
-     * @param	array		Array of parameters from \TYPO3\CMS\Core\TypoScript\TemplateService::linkData - the function creating all links inside TYPO3
-     * @return	void
+     * @param array Array of parameters from \TYPO3\CMS\Core\TypoScript\TemplateService::linkData - the function creating all links inside TYPO3
+     * @return void
      */
     public function encodeSpURL(&$params)
     {
@@ -302,7 +303,7 @@ class UrlRewritingHook implements SingletonInterface
                     'params' => $params,
                     'URL' => &$newUrl,
                 );
-                \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($userFunc, $hookParams, $this);
+                GeneralUtility::callUserFunction($userFunc, $hookParams, $this);
             }
         }
 
@@ -457,7 +458,7 @@ class UrlRewritingHook implements SingletonInterface
         switch ((string)$this->extConf['pagePath']['type']) {
             case 'user':
                 $params = array('paramKeyValues' => &$paramKeyValues, 'pathParts' => &$pathParts, 'pObj' => &$this, 'conf' => $this->extConf['pagePath'], 'mode' => 'encode');
-                \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($this->extConf['pagePath']['userFunc'], $params, $this);
+                GeneralUtility::callUserFunction($this->extConf['pagePath']['userFunc'], $params, $this);
                 break;
             default: // Default: Just passing through the ID/alias of the page:
                 $pathParts[] = rawurlencode($paramKeyValues['id']);
@@ -644,7 +645,7 @@ class UrlRewritingHook implements SingletonInterface
                                     'setup' => $setup
                                 );
                                 $prevVal = $GETvarVal;
-                                $GETvarVal = \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($setup['userFunc'], $params, $this);
+                                $GETvarVal = GeneralUtility::callUserFunction($setup['userFunc'], $params, $this);
                                 $pathParts[] = rawurlencode($GETvarVal);
                                 $this->cHashParameters[$GETvar] = $prevVal;
                             } elseif (is_array($setup['lookUpTable'])) {
@@ -747,7 +748,7 @@ class UrlRewritingHook implements SingletonInterface
                 $GLOBALS['TSFE']->applicationData['tx_realurl']['_CACHE'][$hash] = $setEncodedURL;
 
                 // If the page id is NOT an integer, it's an alias we have to look up
-                if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->encodePageId)) {
+                if (!MathUtility::canBeInterpretedAsInteger($this->encodePageId)) {
                     $this->encodePageId = $this->pageAliasToID($this->encodePageId);
                 }
 
@@ -807,12 +808,12 @@ class UrlRewritingHook implements SingletonInterface
         if (isset($paramKeyValues['cHash'])) {
             if ($this->rebuildCHash) {
                 /* @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHashCalculator */
-                $cacheHashCalculator = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
+                $cacheHashCalculator = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
 
                 $cHashParameters = array_merge($this->cHashParameters, $paramKeyValues);
                 unset($cHashParameters['cHash']);
                 $cHashParameters['id'] = $page_id;
-                $cHashParameters = $cacheHashCalculator->getRelevantParameters(\TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $cHashParameters));
+                $cHashParameters = $cacheHashCalculator->getRelevantParameters(GeneralUtility::implodeArrayForUrl('', $cHashParameters));
                 unset($cHashParameters['']);
                 if (count($cHashParameters) == 1) {
                     // No cHash needed.
@@ -919,7 +920,7 @@ class UrlRewritingHook implements SingletonInterface
                         'params' => $params,
                         'URL' => &$speakingURIpath,
                     );
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($userFunc, $hookParams, $this);
+                    GeneralUtility::callUserFunction($userFunc, $hookParams, $this);
                 }
             }
 
@@ -930,7 +931,7 @@ class UrlRewritingHook implements SingletonInterface
                     $speakingURIpath = substr($speakingURIpath, 0, -1);
                 }
                 if (preg_match($regexp, $speakingURIpath)) { // Only process if a slash is missing:
-                    $options = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $this->extConf['init']['appendMissingSlash'], true);
+                    $options = GeneralUtility::trimExplode(',', $this->extConf['init']['appendMissingSlash'], true);
                     if (in_array('ifNotFile', $options)) {
                         if (!preg_match('/\/[^\/\?]+\.[^\/]+(\?.*)?$/', '/' . $speakingURIpath)) {
                             $speakingURIpath = preg_replace($regexp, '\1/\2', $speakingURIpath);
@@ -952,7 +953,7 @@ class UrlRewritingHook implements SingletonInterface
                                 if (!@parse_url($speakingURIpath, PHP_URL_HOST)) {
                                     @ob_end_clean();
                                     header($status);
-                                    header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($speakingURIpath));
+                                    header('Location: ' . GeneralUtility::locationHeaderUrl($speakingURIpath));
                                     exit;
                                 }
                             }
@@ -962,8 +963,8 @@ class UrlRewritingHook implements SingletonInterface
             }
 
             // If the URL is a single script like "123.1.html" it might be an "old" simulateStaticDocument request. If this is the case and support for this is configured, do NOT try and resolve it as a Speaking URL
-            $fI = \TYPO3\CMS\Core\Utility\GeneralUtility::split_fileref($speakingURIpath);
-            if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($this->pObj->id) && $fI['path'] == '' && $this->extConf['fileName']['defaultToHTMLsuffixOnPrev'] && $this->extConf['init']['respectSimulateStaticURLs']) {
+            $fI = GeneralUtility::split_fileref($speakingURIpath);
+            if (!MathUtility::canBeInterpretedAsInteger($this->pObj->id) && $fI['path'] == '' && $this->extConf['fileName']['defaultToHTMLsuffixOnPrev'] && $this->extConf['init']['respectSimulateStaticURLs']) {
                 // If page ID does not exist yet and page is on the root level and both
                 // respectSimulateStaticURLs and defaultToHTMLsuffixOnPrev are set, than
                 // ignore respectSimulateStaticURLs and attempt to resolve page id.
@@ -1000,7 +1001,7 @@ class UrlRewritingHook implements SingletonInterface
                 $cachedInfo['GET_VARS']['id'] = $cachedInfo['id'];
                 $_SERVER['QUERY_STRING'] = $this->decodeSpURL_createQueryString($cachedInfo['GET_VARS']);
                 if (is_callable('TYPO3\\CMS\\Core\\Utility\\GeneralUtility::flushInternalRuntimeCaches')) {
-                    \TYPO3\CMS\Core\Utility\GeneralUtility::flushInternalRuntimeCaches();
+                    GeneralUtility::flushInternalRuntimeCaches();
                 }
 
                 // Jump-admin if configured
@@ -1037,7 +1038,7 @@ class UrlRewritingHook implements SingletonInterface
                 $url = substr($url, 4);
                 header('HTTP/1.1 ' . $redirectCode . ' TYPO3 RealURL Redirect M' . __LINE__);
             }
-            header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($url));
+            header('Location: ' . GeneralUtility::locationHeaderUrl($url));
             exit();
         }
 
@@ -1052,7 +1053,7 @@ class UrlRewritingHook implements SingletonInterface
                             header('HTTP/1.1 ' . $redirectCode . ' TYPO3 RealURL Redirect M' . __LINE__);
                             $url = substr($url, 4);
                         }
-                        header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($url));
+                        header('Location: ' . GeneralUtility::locationHeaderUrl($url));
                         exit();
                     }
                 }
@@ -1060,7 +1061,7 @@ class UrlRewritingHook implements SingletonInterface
         }
 
         // DB defined redirects
-        $hash = \TYPO3\CMS\Core\Utility\GeneralUtility::md5int($speakingURIpath);
+        $hash = GeneralUtility::md5int($speakingURIpath);
         /** @noinspection PhpUndefinedMethodInspection */
         $url = $GLOBALS['TYPO3_DB']->fullQuoteStr($speakingURIpath, 'tx_realurl_redirects');
         $domainId = $this->getCurrentDomainId();
@@ -1074,7 +1075,7 @@ class UrlRewritingHook implements SingletonInterface
             $fields_values = array(
                 'counter' => 'counter+1',
                 'tstamp' => time(),
-                'last_referer' => \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER')
+                'last_referer' => GeneralUtility::getIndpEnv('HTTP_REFERER')
             );
             /** @noinspection PhpUndefinedMethodInspection */
             $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_realurl_redirects',
@@ -1084,7 +1085,7 @@ class UrlRewritingHook implements SingletonInterface
             // Redirect
             $redirectCode = ($redirectRow['has_moved'] ? 301 : 302);
             header('HTTP/1.1 ' . $redirectCode . ' TYPO3 RealURL Redirect M' . __LINE__);
-            header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($redirectRow['destination']));
+            header('Location: ' . GeneralUtility::locationHeaderUrl($redirectRow['destination']));
             exit();
         }
     }
@@ -1099,7 +1100,7 @@ class UrlRewritingHook implements SingletonInterface
         /** @noinspection PhpUndefinedMethodInspection */
         list($row) = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('uid',
             'sys_domain',
-            'domainName=' . $GLOBALS['TYPO3_DB']->fullQuoteStr(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_HOST'), 'sys_domain') .
+            'domainName=' . $GLOBALS['TYPO3_DB']->fullQuoteStr(GeneralUtility::getIndpEnv('HTTP_HOST'), 'sys_domain') .
                 ' AND redirectTo=\'\''
         );
         $result = (is_array($row) ? intval($row['uid']) : 0);
@@ -1135,10 +1136,10 @@ class UrlRewritingHook implements SingletonInterface
         $pre_GET_VARS = $this->decodeSpURL_settingPreVars($pathParts, $this->extConf['preVars']);
         if (isset($this->extConf['pagePath']['languageGetVar'])) {
             $languageGetVar = $this->extConf['pagePath']['languageGetVar'];
-            if (isset($pre_GET_VARS[$languageGetVar]) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($pre_GET_VARS[$languageGetVar])) {
+            if (isset($pre_GET_VARS[$languageGetVar]) && MathUtility::canBeInterpretedAsInteger($pre_GET_VARS[$languageGetVar])) {
                 // Language from URL
                 $this->detectedLanguage = $pre_GET_VARS[$languageGetVar];
-            } elseif (isset($_GET[$languageGetVar]) && \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($_GET[$languageGetVar])) {
+            } elseif (isset($_GET[$languageGetVar]) && MathUtility::canBeInterpretedAsInteger($_GET[$languageGetVar])) {
                 // This is for _DOMAINS feature
                 $this->detectedLanguage = $_GET[$languageGetVar];
             }
@@ -1182,9 +1183,9 @@ class UrlRewritingHook implements SingletonInterface
         if ($cHashCache) {
             $getVars = $cachedInfo['GET_VARS'];
             $getVars['id'] = $cachedInfo['id'];
-            $queryString = \TYPO3\CMS\Core\Utility\GeneralUtility::implodeArrayForUrl('', $getVars);
+            $queryString = GeneralUtility::implodeArrayForUrl('', $getVars);
             /** @var \TYPO3\CMS\Frontend\Page\CacheHashCalculator $cacheHashCalculator */
-            $cacheHashCalculator = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
+            $cacheHashCalculator = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\CacheHashCalculator');
             $containsRelevantParametersForCHashCreation = count($cacheHashCalculator->getRelevantParameters(ltrim($queryString, '&'))) > 0;
 
             if ($containsRelevantParametersForCHashCreation) {
@@ -1242,12 +1243,12 @@ class UrlRewritingHook implements SingletonInterface
         }
 
         // If cHash is provided in the query string, replace it in $getVars
-        $cHash_override = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('cHash');
+        $cHash_override = GeneralUtility::_GET('cHash');
         if ($cHash_override) {
             $getVars['cHash'] = $cHash_override;
         }
 
-        $queryString = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('QUERY_STRING');
+        $queryString = GeneralUtility::getIndpEnv('QUERY_STRING');
         if ($queryString) {
             array_push($parameters, $queryString);
         }
@@ -1269,7 +1270,7 @@ class UrlRewritingHook implements SingletonInterface
             case 'user':
                 $params = array('pathParts' => &$pathParts, 'pObj' => &$this, 'conf' => $this->extConf['pagePath'], 'mode' => 'decode');
 
-                $result = \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($this->extConf['pagePath']['userFunc'], $params, $this);
+                $result = GeneralUtility::callUserFunction($this->extConf['pagePath']['userFunc'], $params, $this);
                 break;
             default: // Default: Just passing through the ID/alias of the page:
                 $value = array_shift($pathParts);
@@ -1358,7 +1359,7 @@ class UrlRewritingHook implements SingletonInterface
                     // Implode URL and redirect
                     $redirectUrl = implode('/', $originalDirs);
                     header('HTTP/1.1 301 TYPO3 RealURL Redirect M' . __LINE__);
-                    header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($redirectUrl));
+                    header('Location: ' . GeneralUtility::locationHeaderUrl($redirectUrl));
                     exit();
                 } elseif ($this->extConf['init']['postVarSet_failureMode'] == 'ignore') {
                     // Add the element just taken off. What is left now will be the post-parts that were not mapped to anything.
@@ -1390,7 +1391,7 @@ class UrlRewritingHook implements SingletonInterface
     protected function decodeSpURL_fixMagicQuotes(&$array)
     {
         if (get_magic_quotes_gpc() && is_array($array)) {
-            \TYPO3\CMS\Core\Utility\GeneralUtility::stripSlashesOnArray($array);
+            GeneralUtility::stripSlashesOnArray($array);
         }
     }
 
@@ -1431,7 +1432,7 @@ class UrlRewritingHook implements SingletonInterface
     {
         $getVars = array();
         $fileName = array_pop($pathParts);
-        $fileParts = \TYPO3\CMS\Core\Utility\GeneralUtility::revExplode('.', $fileName, 2);
+        $fileParts = GeneralUtility::revExplode('.', $fileName, 2);
         if (count($fileParts) == 2 && !$fileParts[1]) {
             $this->decodeSpURL_throw404('File "' . $fileName . '" was not found (2)!');
         }
@@ -1494,7 +1495,7 @@ class UrlRewritingHook implements SingletonInterface
      * @param string $extension
      * @param array $pathPartsCopy Path parts (can be modified)
      * @param array $getVars
-     * @return array GET variables (can be enpty in case if there is a default file name)
+     * @return bool GET variables (can be enpty in case if there is a default file name)
      * @see tx_realurl::decodeSpURL_decodeFileName()
      */
     protected function decodeSpURL_decodeFileName_lookupInIndex($fileName, $segment, $extension, array &$pathPartsCopy, array &$getVars)
@@ -1580,7 +1581,7 @@ class UrlRewritingHook implements SingletonInterface
                                 $url = str_replace('###REMAIN_PATH###', rawurlencode(urldecode($remainPath)), $url);
 
                                 header('HTTP/1.1 302 TYPO3 RealURL Redirect M' . __LINE__);
-                                header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($url));
+                                header('Location: ' . GeneralUtility::locationHeaderUrl($url));
                                 exit();
                                 break;
                             case 'admin':
@@ -1622,11 +1623,11 @@ class UrlRewritingHook implements SingletonInterface
                                     'value' => $value,
                                     'setup' => $setup
                                 );
-                                $value = \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($setup['userFunc'], $params, $this);
+                                $value = GeneralUtility::callUserFunction($setup['userFunc'], $params, $this);
                             } elseif (is_array($setup['lookUpTable'])) {
                                 $temp = $value;
                                 $value = $this->lookUpTranslation($setup['lookUpTable'], $value, true);
-                                if ($setup['lookUpTable']['enable404forInvalidAlias'] && !\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($value) && !strcmp($value, $temp)) {
+                                if ($setup['lookUpTable']['enable404forInvalidAlias'] && !MathUtility::canBeInterpretedAsInteger($value) && !strcmp($value, $temp)) {
                                     $this->decodeSpURL_throw404('Couldn\'t map alias "' . $value . '" to an ID');
                                 }
                             } elseif (isset($setup['valueDefault'])) {
@@ -1687,15 +1688,15 @@ class UrlRewritingHook implements SingletonInterface
 
         // Log error
         if (!$this->extConf['init']['disableErrorLog']) {
-            $hash = \TYPO3\CMS\Core\Utility\GeneralUtility::md5int($this->speakingURIpath_procValue);
+            $hash = GeneralUtility::md5int($this->speakingURIpath_procValue);
             $rootpage_id = intval($this->extConf['pagePath']['rootpage_id']);
             $cond = 'url_hash=' . intval($hash) . ' AND rootpage_id=' . $rootpage_id;
-            $fields_values = array('url_hash' => $hash, 'url' => $this->speakingURIpath_procValue, 'error' => $msg, 'counter' => 1, 'tstamp' => time(), 'cr_date' => time(), 'rootpage_id' => $rootpage_id, 'last_referer' => \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'));
+            $fields_values = array('url_hash' => $hash, 'url' => $this->speakingURIpath_procValue, 'error' => $msg, 'counter' => 1, 'tstamp' => time(), 'cr_date' => time(), 'rootpage_id' => $rootpage_id, 'last_referer' => GeneralUtility::getIndpEnv('HTTP_REFERER'));
             if ($this->useMySQLExtendedSyntax) {
                 /** @noinspection PhpUndefinedMethodInspection */
                 $query = $GLOBALS['TYPO3_DB']->INSERTquery('tx_realurl_errorlog', $fields_values);
                 /** @noinspection PhpUndefinedMethodInspection */
-                $query .= ' ON DUPLICATE KEY UPDATE ' . 'error=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($msg, 'tx_realurl_errorlog') . ',' . 'counter=counter+1,' . 'tstamp=' . $fields_values['tstamp'] . ',' . 'last_referer=' . $GLOBALS['TYPO3_DB']->fullQuoteStr(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'), 'tx_realurl_errorlog');
+                $query .= ' ON DUPLICATE KEY UPDATE ' . 'error=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($msg, 'tx_realurl_errorlog') . ',' . 'counter=counter+1,' . 'tstamp=' . $fields_values['tstamp'] . ',' . 'last_referer=' . $GLOBALS['TYPO3_DB']->fullQuoteStr(GeneralUtility::getIndpEnv('HTTP_REFERER'), 'tx_realurl_errorlog');
                 /** @noinspection PhpUndefinedMethodInspection */
                 $GLOBALS['TYPO3_DB']->sql_query($query);
             } else {
@@ -1705,7 +1706,7 @@ class UrlRewritingHook implements SingletonInterface
                 list($error_row) = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows('counter', 'tx_realurl_errorlog', $cond);
                 if (count($error_row)) {
                     /** @noinspection PhpUndefinedMethodInspection */
-                    $fields_values = array('error' => $msg, 'counter' => $error_row['counter'] + 1, 'tstamp' => time(), 'last_referer' => \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_REFERER'));
+                    $fields_values = array('error' => $msg, 'counter' => $error_row['counter'] + 1, 'tstamp' => time(), 'last_referer' => GeneralUtility::getIndpEnv('HTTP_REFERER'));
                     /** @noinspection PhpUndefinedMethodInspection */
                     $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_realurl_errorlog', $cond, $fields_values);
                 } else {
@@ -1740,9 +1741,9 @@ class UrlRewritingHook implements SingletonInterface
                 $GLOBALS['TSFE']->set_no_cache();
             }
         } else {
-            $adminUrl = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir . 'index.php?redirect_url=' . rawurlencode(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('REQUEST_URI'));
+            $adminUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir . 'index.php?redirect_url=' . rawurlencode(GeneralUtility::getIndpEnv('REQUEST_URI'));
             header('HTTP/1.1 302 TYPO3 RealURL Redirect M' . __LINE__);
-            header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($adminUrl));
+            header('Location: ' . GeneralUtility::locationHeaderUrl($adminUrl));
             exit();
         }
     }
@@ -1756,9 +1757,9 @@ class UrlRewritingHook implements SingletonInterface
     protected function decodeSpURL_jumpAdmin_goBackend($pageId)
     {
         if ($this->decode_editInBackend) {
-            $editUrl = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir . 'alt_main.php?edit=' . intval($pageId);
+            $editUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . TYPO3_mainDir . 'alt_main.php?edit=' . intval($pageId);
             header('HTTP/1.1 302 TYPO3 RealURL Redirect M' . __LINE__);
-            header('Location: ' . \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl($editUrl));
+            header('Location: ' . GeneralUtility::locationHeaderUrl($editUrl));
             exit();
         }
     }
@@ -1933,7 +1934,7 @@ class UrlRewritingHook implements SingletonInterface
 
             // Define the language for the alias
             $lang = intval($this->orig_paramKeyValues[$cfg['languageGetVar']]);
-            if (\TYPO3\CMS\Core\Utility\GeneralUtility::inList($cfg['languageExceptionUids'], $lang)) { // Might be excepted (like you should for CJK cases which does not translate to ASCII equivalents)
+            if (GeneralUtility::inList($cfg['languageExceptionUids'], $lang)) { // Might be excepted (like you should for CJK cases which does not translate to ASCII equivalents)
                 $lang = 0;
             }
 
@@ -1960,8 +1961,8 @@ class UrlRewritingHook implements SingletonInterface
                         /** @noinspection PhpUndefinedMethodInspection */
                         $res = $GLOBALS['TYPO3_DB']->exec_SELECTquery($cfg['alias_field'], $cfg['table'],
                                 $cfg['transOrigPointerField'] . '=' . intval($row['uid']) . '
-								AND ' . $cfg['languageField'] . '=' . intval($lang) . '
-								' . $cfg['addWhereClause']);
+                                AND ' . $cfg['languageField'] . '=' . intval($lang) . '
+                                ' . $cfg['addWhereClause']);
                         /** @noinspection PhpUndefinedMethodInspection */
                         $lrow = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
                         /** @noinspection PhpUndefinedMethodInspection */
@@ -1974,8 +1975,8 @@ class UrlRewritingHook implements SingletonInterface
                     $maximumAliasLength = min(255, (int)$cfg['maxLength'] ?: $this->maxLookUpLgd);
 
                     if ($cfg['useUniqueCache']) { // If cache is to be used, store the alias in the cache:
-                        $csConvObj = t3lib_div::makeInstance('t3lib_cs');
-                        /** @var t3lib_cs $csConvObj */
+                        /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csConvObj */
+                        $csConvObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
                         $aliasValue = $row[$cfg['alias_field']];
                         if ($csConvObj->strlen('utf-8', $aliasValue) > $maximumAliasLength) {
                             $aliasValue = $csConvObj->crop('utf-8', $aliasValue, $maximumAliasLength);
@@ -2093,7 +2094,7 @@ class UrlRewritingHook implements SingletonInterface
 
         // if no unique alias was found in the process above, just suffix a hash string and assume that is unique...
         if (!$uniqueAlias) {
-            $newAliasValue .= '-' . \TYPO3\CMS\Core\Utility\GeneralUtility::shortMD5(microtime());
+            $newAliasValue .= '-' . GeneralUtility::shortMD5(microtime());
             $uniqueAlias = $newAliasValue;
         }
 
@@ -2110,11 +2111,11 @@ class UrlRewritingHook implements SingletonInterface
             // Look for an alias based on ID
             /** @noinspection PhpUndefinedMethodInspection */
             $GLOBALS['TYPO3_DB']->exec_UPDATEquery('tx_realurl_uniqalias', 'value_id=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($idValue, 'tx_realurl_uniqalias') . '
-					AND field_alias=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($cfg['alias_field'], 'tx_realurl_uniqalias') . '
-					AND field_id=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($cfg['id_field'], 'tx_realurl_uniqalias') . '
-					AND tablename=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($cfg['table'], 'tx_realurl_uniqalias') . '
-					AND lang=' . intval($lang) . '
-					AND expire=0', array('expire' => time() + 24 * 3600 * ($cfg['expireDays'] ? $cfg['expireDays'] : 60)));
+                    AND field_alias=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($cfg['alias_field'], 'tx_realurl_uniqalias') . '
+                    AND field_id=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($cfg['id_field'], 'tx_realurl_uniqalias') . '
+                    AND tablename=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($cfg['table'], 'tx_realurl_uniqalias') . '
+                    AND lang=' . intval($lang) . '
+                    AND expire=0', array('expire' => time() + 24 * 3600 * ($cfg['expireDays'] ? $cfg['expireDays'] : 60)));
 
             // Store new alias
             /** @noinspection PhpUndefinedMethodInspection */
@@ -2168,7 +2169,7 @@ class UrlRewritingHook implements SingletonInterface
         if ($cfg['useUniqueCache_conf']['encodeTitle_userProc']) {
             $encodingConfiguration = array('strtolower' => $cfg['useUniqueCache_conf']['strtolower'], 'spaceCharacter' => $cfg['useUniqueCache_conf']['spaceCharacter']);
             $params = array('pObj' => &$this, 'title' => $newAliasValue, 'processedTitle' => $processedTitle, 'encodingConfiguration' => $encodingConfiguration);
-            $processedTitle = \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($cfg['useUniqueCache_conf']['encodeTitle_userProc'], $params, $this);
+            $processedTitle = GeneralUtility::callUserFunction($cfg['useUniqueCache_conf']['encodeTitle_userProc'], $params, $this);
         }
 
         // Return value
@@ -2206,7 +2207,7 @@ class UrlRewritingHook implements SingletonInterface
 
             /** @noinspection PhpIncludeInspection */
             if (count($testConf) == 0 && !@include_once($autoConfPath)) {
-                $autoConfGenerator = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx\\Realurl\\Configuration\\ConfigurationGenerator');
+                $autoConfGenerator = GeneralUtility::makeInstance('Tx\\Realurl\\Configuration\\ConfigurationGenerator');
                 $autoConfGenerator->generateConfiguration();
                 unset($autoConfGenerator);
                 /** @noinspection PhpIncludeInspection */
@@ -2260,14 +2261,14 @@ class UrlRewritingHook implements SingletonInterface
      */
     protected function getHost()
     {
-        $host = strtolower((string)\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('HTTP_HOST'));
+        $host = strtolower((string)GeneralUtility::getIndpEnv('HTTP_HOST'));
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl']['getHost'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl']['getHost'] as $userFunc) {
                 $hookParams = array(
                     'host' => $host,
                 );
-                $newHost = \TYPO3\CMS\Core\Utility\GeneralUtility::callUserFunction($userFunc, $hookParams, $this);
+                $newHost = GeneralUtility::callUserFunction($userFunc, $hookParams, $this);
                 if (!empty($newHost) && is_string($newHost)) {
                     $host = $newHost;
                 }
@@ -2290,7 +2291,7 @@ class UrlRewritingHook implements SingletonInterface
     {
 
         // If the page id is NOT an integer, it's an alias we have to look up
-        if (!\TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($pageId)) {
+        if (!MathUtility::canBeInterpretedAsInteger($pageId)) {
             $pageId = $this->pageAliasToID($pageId);
         }
 
@@ -2359,7 +2360,7 @@ class UrlRewritingHook implements SingletonInterface
 
         // Check previous value
         if (isset($setup['prevValueInList'])) {
-            if (!\TYPO3\CMS\Core\Utility\GeneralUtility::inList($setup['prevValueInList'], $prevVal)) {
+            if (!GeneralUtility::inList($setup['prevValueInList'], $prevVal)) {
                 $return = false;
             }
         }
@@ -2427,7 +2428,7 @@ class UrlRewritingHook implements SingletonInterface
                 }
                 if (isset($disposal['GETvar']) && isset($disposal['value'])) {
                     $GETvar = $disposal['GETvar'];
-                    $currentValue = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET($GETvar);
+                    $currentValue = GeneralUtility::_GET($GETvar);
                     $expectedValue = (isset($urlParams[$GETvar]) ? $urlParams[$GETvar] : false);
                     if ($expectedValue !== false && $disposal['value'] == $expectedValue) {
                         if (!isset($disposal['ifDifferentToCurrent']) || $disposal['value'] != $currentValue) {
@@ -2435,7 +2436,7 @@ class UrlRewritingHook implements SingletonInterface
                                 $this->ignoreGETvar = $GETvar;
                                 $this->setConfigurationByReference($disposal['useConfiguration']);
                             }
-                            $this->additionalParametersForChash[$GETvar] = \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($urlParams[$GETvar]) ? intval($urlParams[$GETvar]) : $urlParams[$GETvar];
+                            $this->additionalParametersForChash[$GETvar] = MathUtility::canBeInterpretedAsInteger($urlParams[$GETvar]) ? intval($urlParams[$GETvar]) : $urlParams[$GETvar];
                             return $disposal;
                         } else {
                             $this->ignoreGETvar = $GETvar;
@@ -2458,7 +2459,7 @@ class UrlRewritingHook implements SingletonInterface
     protected function adjustConfigurationByHostDecode($configuration)
     {
         if (is_array($configuration)) {
-            $host = strtolower(\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY'));
+            $host = strtolower(GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY'));
             $hostConfiguration = false;
 
             if (isset($configuration[$host])) {
@@ -2478,7 +2479,7 @@ class UrlRewritingHook implements SingletonInterface
                     foreach ($hostConfiguration['GETvars'] as $key => $value) {
                         if (empty($_GET[$key])) {
                             $_GET[$key] = $value;
-                            $this->additionalParametersForChash[$key] = \TYPO3\CMS\Core\Utility\MathUtility::canBeInterpretedAsInteger($value) ? intval($value) : $value;
+                            $this->additionalParametersForChash[$key] = MathUtility::canBeInterpretedAsInteger($value) ? intval($value) : $value;
                         }
                     }
                     if (isset($hostConfiguration['useConfiguration'])) {
@@ -2620,7 +2621,7 @@ class UrlRewritingHook implements SingletonInterface
     /**
      * Checks if rootpage_id is set and if not, sets it
      *
-     * @return void
+     * @throws \Exception
      */
     protected function adjustRootPageId()
     {
@@ -2631,7 +2632,7 @@ class UrlRewritingHook implements SingletonInterface
                         'multidomain configuration without rootpage_id. ' .
                         'Please, fix your RealURL configuration!');
                 } else {
-                    throw new Exception('RealURL error: ' .
+                    throw new \Exception('RealURL error: ' .
                         'unable to determine rootpage_id for the current domain.');
                 }
             }
@@ -2645,7 +2646,7 @@ class UrlRewritingHook implements SingletonInterface
                     $this->pObj->pageNotFoundAndExit('RealURL error: ' .
                         'unable to determine rootpage_id for the current domain.');
                 } else {
-                    throw new Exception('RealURL error: ' .
+                    throw new \Exception('RealURL error: ' .
                         'unable to determine rootpage_id for the current domain.');
                 }
             }
@@ -2762,7 +2763,7 @@ class UrlRewritingHook implements SingletonInterface
     public function devLog($message, $dataVar = false, $severity = 0)
     {
         if ($this->enableDevLog) {
-            \TYPO3\CMS\Core\Utility\GeneralUtility::devLog('[' . $this->devLogId . '] ' . $message, 'realurl', $severity, $dataVar);
+            GeneralUtility::devLog('[' . $this->devLogId . '] ' . $message, 'realurl', $severity, $dataVar);
         }
     }
 
