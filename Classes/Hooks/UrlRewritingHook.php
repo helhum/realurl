@@ -1974,7 +1974,7 @@ class UrlRewritingHook implements SingletonInterface
                     $maximumAliasLength = min(255, (int)$cfg['maxLength'] ?: $this->maxLookUpLgd);
 
                     if ($cfg['useUniqueCache']) { // If cache is to be used, store the alias in the cache:
-                        $csConvObj = t3lib_div::makeInstance('t3lib_cs');
+                        $csConvObj = \t3lib_div::makeInstance('t3lib_cs');
                         /** @var t3lib_cs $csConvObj */
                         $aliasValue = $row[$cfg['alias_field']];
                         if ($csConvObj->strlen('utf-8', $aliasValue) > $maximumAliasLength) {
