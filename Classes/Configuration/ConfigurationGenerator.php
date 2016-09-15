@@ -60,7 +60,7 @@ class ConfigurationGenerator
     {
         $fileName = PATH_site . self::AUTOCONFIGURTION_FILE;
         if (class_exists('TYPO3\\CMS\\Core\\Locking\\LockFactory')) {
-            $lockFactory = GeneralUtility::makeInstance(LockFactory::class);
+            $lockFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Locking\\LockFactory');
             $lockObject = $lockFactory->createLocker(
                 $fileName,
                 LockingStrategyInterface::LOCK_CAPABILITY_EXCLUSIVE | LockingStrategyInterface::LOCK_CAPABILITY_NOBLOCK

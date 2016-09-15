@@ -2843,6 +2843,6 @@ class UrlRewritingHook implements SingletonInterface
             // @deprecated since 8.0, will be removed once 7.6 support will be removed
             return $GLOBALS['TT'];
         }
-        return GeneralUtility::makeInstance(TimeTracker::class);
+        return GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TimeTracker\\TimeTracker');
     }
 }
