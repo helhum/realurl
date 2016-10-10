@@ -226,7 +226,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
             // Creating top icon; the current page
         $tree->tree[] = array(
             'row' => $treeStartingRecord,
-            'HTML' => \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIconForRecord('pages', $treeStartingRecord)
+            'HTML' => $this->getIconForRecord('pages', $treeStartingRecord)
         );
 
         // Create the tree from starting point:
@@ -1955,6 +1955,18 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
         }
     }
 
+    /**
+     * @param string $table
+     * @param array $record
+     * @return string
+     */
+    protected function getIconForRecord($table, array $record) {
+        if ($this->typo3VersionMain === 6) {
+            return \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIconForRecord($table, $record);
+        } else {
+            return $this->iconFactory->getIconForRecord($table, $record)->render();
+        }
+    }
     /**
      * @param string $icon
      * @param string $iconSize
