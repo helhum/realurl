@@ -1951,7 +1951,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
             return $this->getIconByIconUtility($icon, $iconSize, $backPath, $title, $alt);
         } else {
             $icon = $this->iconMapping[$icon];
-            return $this->getIconByIconFactory($icon, $iconSize);
+            return $this->getIconByIconFactory($icon);
         }
     }
 
