@@ -1969,11 +1969,11 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
         $imgTag = '<img' . \TYPO3\CMS\Backend\Utility\IconUtility::skinImg($backPath, $icon, $iconSize);
 
         if ($title !== '') {
-            $imgTag .= 'title="' . $title . '" ';
+            $imgTag .= 'title="' . htmlspecialchars($title) . '" ';
         }
 
         if ($alt !== '') {
-            $imgTag .= 'alt="' . $alt . '" ';
+            $imgTag .= 'alt="' . htmlspecialchars($alt) . '" ';
         }
 
         $imgTag .= '/>';
