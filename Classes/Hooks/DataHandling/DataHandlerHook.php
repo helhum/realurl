@@ -295,6 +295,17 @@ class DataHandlerHook implements SingletonInterface
     }
 
     /**
+     * @param array $arguments
+     */
+    public function flushCacheTables(array $arguments)
+    {
+        if (isset($arguments['cacheCmd'])) {
+            $GLOBALS['TYPO3_DB']->exec_TRUNCATEquery('tx_realurl_urlencodecache');
+            $GLOBALS['TYPO3_DB']->exec_TRUNCATEquery('tx_realurl_urldecodecache');
+        }
+    }
+
+    /**
      * A TCEMain hook to update caches when something happens to a page or
      * language overlay.
      *
