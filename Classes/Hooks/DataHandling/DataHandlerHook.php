@@ -53,7 +53,7 @@ class DataHandlerHook implements SingletonInterface
      */
     protected function clearAutoConfiguration($tableName)
     {
-        if ($tableName == 'sys_domain') {
+        if ($tableName === 'sys_domain') {
             @unlink(PATH_site . ConfigurationGenerator::AUTOCONFIGURTION_FILE);
         }
     }
@@ -69,10 +69,10 @@ class DataHandlerHook implements SingletonInterface
     protected function clearCaches($command, $tableName, $recordId)
     {
         if ($this->isTableForCache($tableName)) {
-            if ($command == 'delete' || $command == 'move') {
+            if ($command === 'delete' || $command === 'move') {
                 list($pageId, ) = $this->getPageData($tableName, $recordId);
                 $this->fetchRealURLConfiguration($pageId);
-                if ($command == 'delete') {
+                if ($command === 'delete') {
                     $this->clearPathCache($pageId);
                 } else {
                     $this->expirePathCacheForAllLanguages($pageId);
@@ -121,7 +121,7 @@ class DataHandlerHook implements SingletonInterface
      */
     protected function clearUniqueAlias($command, $tableName, $recordId)
     {
-        if ($command == 'delete') {
+        if ($command === 'delete') {
             /** @noinspection PhpUndefinedMethodInspection */
             $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_realurl_uniqalias',
                 'tablename=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($tableName, 'tx_realurl_uniqalias') .
@@ -256,7 +256,7 @@ class DataHandlerHook implements SingletonInterface
      */
     protected function getFieldList($tableName)
     {
-        if ($tableName == 'pages_language_overlay') {
+        if ($tableName === 'pages_language_overlay') {
             $fieldList = TX_REALURL_SEGTITLEFIELDLIST_PLO;
         } else {
             if (isset($this->config['pagePath']['segTitleFieldList'])) {
@@ -291,7 +291,18 @@ class DataHandlerHook implements SingletonInterface
      */
     protected static function isTableForCache($tableName)
     {
-        return ($tableName == 'pages' || $tableName == 'pages_language_overlay');
+        return ($tableName === 'pages' || $tableName === 'pages_language_overlay');
+    }
+
+    /**
+     * @param array $arguments
+     */
+    public function flushCacheTables(array $arguments)
+    {
+        if (isset($arguments['cacheCmd'])) {
+            $GLOBALS['TYPO3_DB']->exec_TRUNCATEquery('tx_realurl_urlencodecache');
+            $GLOBALS['TYPO3_DB']->exec_TRUNCATEquery('tx_realurl_urldecodecache');
+        }
     }
 
     /**
@@ -335,7 +346,7 @@ class DataHandlerHook implements SingletonInterface
      */
     public function clearPageRelatedUrlCaches($params)
     {
-        $pageIdArray = $params['table'] == 'pages' ? array($params['uid']) : $params['pageIdArray'];
+        $pageIdArray = $params['table'] === 'pages' ? array($params['uid']) : $params['pageIdArray'];
         if (is_array($pageIdArray) && count($pageIdArray) > 0) {
             /** @noinspection PhpUndefinedMethodInspection */
             $pageIdList = implode(',', $GLOBALS['TYPO3_DB']->cleanIntArray($pageIdArray));
