@@ -360,22 +360,6 @@ class DataHandlerHook implements SingletonInterface
     }
 
     /**
-     * Hook function for clearing page releated cache after clearCache command
-     *
-     * @param array $params Params for hook
-     * @return void
-     */
-    public function clearCachePostProc($params)
-    {
-        if ($params['cacheCmd'] === 'pages') {
-            /** @noinspection PhpUndefinedMethodInspection */
-            $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_realurl_urlencodecache', '1=1');
-            /** @noinspection PhpUndefinedMethodInspection */
-            $GLOBALS['TYPO3_DB']->exec_DELETEquery('tx_realurl_urldecodecache', '1=1');
-        }
-    }
-
-    /**
      * Processes page and content changes in regard to RealURL caches.
      *
      * @param string $status

@@ -8,7 +8,6 @@ call_user_func(function ($extensionConfiguration) {
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['tx_realurl'] = 'Tx\\Realurl\\Hooks\\DataHandling\\DataHandlerHook->flushCacheTables';
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearPageCacheEval']['tx_realurl'] = 'Tx\\Realurl\\Hooks\\DataHandling\\DataHandlerHook->clearPageRelatedUrlCaches';
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc']['tx_realurl'] = 'Tx\\Realurl\\Hooks\\DataHandling\\DataHandlerHook->clearCachePostProc';
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass']['tx_realurl'] = 'Tx\\Realurl\\Hooks\\DataHandling\\DataHandlerHook';
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processCmdmapClass']['tx_realurl'] = 'Tx\\Realurl\\Hooks\\DataHandling\\DataHandlerHook';
 
