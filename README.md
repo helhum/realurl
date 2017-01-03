@@ -10,5 +10,5 @@ As the class names changed the configuration needs some slight change, too:
 
 Other than that, configuration and behaviour (including potential bugs) are the same.
 
-This fork comes with no support. If you find bugs or have questions, you may want to use the original version you can find on forge:
-https://forge.typo3.org/projects/extension-realurl
+This fork comes with no support. If you find bugs or have questions, you may want to use the original version:
+https://github.com/dmitryd/typo3-realurl
