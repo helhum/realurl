@@ -1435,8 +1435,7 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
      */
     public function redirectView()
     {
-        $output = $this->pObj->doc->spacer(12);
-        $output .= $this->processRedirectActions();
+        $output = $this->processRedirectActions();
 
         list($sortingParameter, $sortingDirection) = $this->getRedirectViewSortingParameters();
 
