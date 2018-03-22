@@ -31,4 +31,9 @@ call_user_func(function ($extensionConfiguration) {
 
     define('TX_REALURL_SEGTITLEFIELDLIST_DEFAULT', 'tx_realurl_pathsegment,alias,nav_title,title,uid');
     define('TX_REALURL_SEGTITLEFIELDLIST_PLO', 'tx_realurl_pathsegment,nav_title,title,uid');
+    if (!defined('TYPO3_db_host')) {
+        define('TYPO3_db_host', isset($GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['host'])
+              ? $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['host']
+              : 'localhost');
+    }
 }, $_EXTCONF);
