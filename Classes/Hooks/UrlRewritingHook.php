@@ -2144,7 +2144,7 @@ class UrlRewritingHook implements SingletonInterface
 
         // Convert to lowercase
         if ($cfg['useUniqueCache_conf']['strtolower']) {
-            $processedTitle = $GLOBALS['TSFE']->csConvObj->conv_case($charset, $processedTitle, 'toLower');
+            $processedTitle = mb_strtolower($processedTitle, $charset);
         }
 
         $processedTitle = strip_tags($processedTitle);
