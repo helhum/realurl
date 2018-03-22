@@ -2197,7 +2197,7 @@ class UrlRewritingHook implements SingletonInterface
         $realUrlConf = (array)@unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['realurl']);
         // Autoconfiguration
         if ($realUrlConf['enableAutoConf']) {
-            $autoConfPath = PATH_site . \Tx\Realurl\Configuration\ConfigurationGenerator::AUTOCONFIGURTION_FILE;
+            $autoConfPath = PATH_site . TX_REALURL_AUTOCONF_FILE;
             $testConf = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl'];
             if (is_array($testConf)) {
                 unset($testConf['getHost']);

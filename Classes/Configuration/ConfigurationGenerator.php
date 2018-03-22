@@ -39,8 +39,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ConfigurationGenerator
 {
 
-    const AUTOCONFIGURTION_FILE = 'typo3conf/realurl_autoconf.php';
-
     /**
      * @var \TYPO3\CMS\Core\Database\DatabaseConnection
      */
@@ -58,7 +56,7 @@ class ConfigurationGenerator
      */
     public function generateConfiguration()
     {
-        $fileName = PATH_site . self::AUTOCONFIGURTION_FILE;
+        $fileName = PATH_site . TX_REALURL_AUTOCONF_FILE;
         if (class_exists('TYPO3\\CMS\\Core\\Locking\\LockFactory')) {
             $lockFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Locking\\LockFactory');
             $lockObject = $lockFactory->createLocker(
