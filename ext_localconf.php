@@ -1,10 +1,6 @@
 <?php
 defined('TYPO3_MODE') or die('Access denied.');
 
-if (!defined('TX_REALURL_AUTOCONF_FILE')) {
-    define('TX_REALURL_AUTOCONF_FILE', 'typo3conf/realurl_autoconf.php');
-}
-
 call_user_func(function ($extensionConfiguration) {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tstemplate.php']['linkData-PostProc']['tx_realurl'] = 'Tx\\Realurl\\Hooks\\UrlRewritingHook->encodeSpURL';
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_content.php']['typoLink_PostProc']['tx_realurl'] = 'Tx\\Realurl\\Hooks\\UrlRewritingHook->encodeSpURL_urlPrepend';
@@ -28,7 +24,7 @@ call_user_func(function ($extensionConfiguration) {
         }
     }
 
-    $_realurl_conf_file = PATH_site . TX_REALURL_AUTOCONF_FILE;
+    $_realurl_conf_file = PATH_site . \Tx\Realurl\Configuration\ConfigurationGenerator::AUTOCONFIGURTION_FILE;
     if ($_realurl_conf['enableAutoConf'] && !isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl']) && file_exists($_realurl_conf_file)) {
         require_once $_realurl_conf_file;
     }
