@@ -67,6 +67,8 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
      */
     public function __construct()
     {
+        $typo3VersionArray = VersionNumberUtility::convertVersionStringToArray(VersionNumberUtility::getCurrentTypo3Version());
+        $this->typo3VersionMain = $typo3VersionArray['version_main'];
         $GLOBALS['LANG']->includeLLfile('EXT:realurl/Resources/Private/Language/locallang_info_module.xml');
     }
 
@@ -77,13 +79,18 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
      */
     public function modMenu()
     {
+        $languageFile = 'LLL:EXT:lang/Resources/Private/Language/locallang_core.xlf';
+        if ($this->typo3VersionMain < 8) {
+            $languageFile = 'LLL:EXT:lang/locallang_core.xlf';
+        }
+
         $modMenu = array(
             'depth' => array(
-                0 => $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.depth_0'),
-                1 => $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.depth_1'),
-                2 => $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.depth_2'),
-                3 => $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.depth_3'),
-                99 => $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.depth_infi'),
+                0 => $GLOBALS['LANG']->sL($languageFile . ':labels.depth_0'),
+                1 => $GLOBALS['LANG']->sL($languageFile . ':labels.depth_1'),
+                2 => $GLOBALS['LANG']->sL($languageFile . ':labels.depth_2'),
+                3 => $GLOBALS['LANG']->sL($languageFile . ':labels.depth_3'),
+                99 => $GLOBALS['LANG']->sL($languageFile . ':labels.depth_infi'),
             ),
             'type' => array(
                 'pathcache' => 'ID-to-path mapping',
@@ -108,9 +115,6 @@ class AdministrationModuleFunction extends \TYPO3\CMS\Backend\Module\AbstractFun
      */
     public function main()
     {
-        $typo3VersionArray = VersionNumberUtility::convertVersionStringToArray(VersionNumberUtility::getCurrentTypo3Version());
-        $this->typo3VersionMain = $typo3VersionArray['version_main'];
-
         if ($this->typo3VersionMain > 6) {
             $this->iconFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
         }
