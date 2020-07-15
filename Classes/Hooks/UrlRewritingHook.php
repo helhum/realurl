@@ -2390,7 +2390,9 @@ class UrlRewritingHook implements SingletonInterface
     {
         $result = false;
 
-        $this->additionalParametersForChash = array();
+        $this->additionalParametersForChash = array(
+            $this->getHost()
+        );
 
         if (isset($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl']['_DOMAINS'])) {
             $configuration = $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl']['_DOMAINS'];
