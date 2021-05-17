@@ -614,7 +614,7 @@ class UrlRewritingHook implements SingletonInterface
                             $GETvar = $setup['GETvar'];
                             if ($GETvar == $this->ignoreGETvar) {
                                 // Do not do anything with this var!
-                                continue;
+                                continue 2;
                             }
                             $parameterSet = isset($paramKeyValues[$GETvar]);
                             $GETvarVal = $parameterSet ? $paramKeyValues[$GETvar] : '';
