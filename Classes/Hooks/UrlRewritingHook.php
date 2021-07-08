@@ -130,6 +130,7 @@ class UrlRewritingHook implements SingletonInterface
 
     public $enableStrictMode = false;
     public $enableChashDebug = false;
+    public $includeSiterootInUrl = false;
 
     /**
      * If non-empty, corresponding URL query parameter will be ignored in preVars
@@ -179,6 +180,7 @@ class UrlRewritingHook implements SingletonInterface
         $sysconf = (array)unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['realurl']);
         $this->enableStrictMode = (bool)$sysconf['enableStrictMode'];
         $this->enableChashUrlDebug = (bool)$sysconf['enableChashUrlDebug'];
+        $this->includeSiterootInUrl = (bool)$sysconf['includeSiterootInUrl'];
 
         $this->initDevLog($sysconf);
     }

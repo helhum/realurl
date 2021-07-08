@@ -4,6 +4,9 @@ configFile = typo3conf/realurl_conf.php
 # cat=basic/enable; type=boolean; label=Enable automatic configuration:Enable this if you do not want to write configuration manually. It will generate configuration automatically and store it in typo3conf/. Automatically ignored if you wrote configuration yourself. See manual for more information.
 enableAutoConf = 1
 
+# cat=basic/enable; type=boolean; label=Include pages marked as siteroot in URL path (if siteroot is not the configured rootpage)
+includeSiterootInUrl = 0
+
 # cat=basic/enable; type=boolean; label=Enable devLog:Debugging-only! Required any 3rd party devLog extension
 enableDevLog = 0
 

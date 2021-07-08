@@ -573,7 +573,12 @@ class UriGeneratorAndResolver implements SingletonInterface
     protected function rootLineToPath($rl, $lang)
     {
         $paths = array();
-        array_shift($rl); // Ignore the first path, as this is the root of the website
+
+        // Ignore the first path, if the first site is our configured rootpage and siteroots should not be shown in url path
+        if ($this->pObj->includeSiterootInUrl && $rl[0]['uid'] == $this->conf['rootpage_id']) {
+            array_shift($rl);
+        }
+
         $c = count($rl);
         $stopUsingCache = false;
         $this->pObj->devLog('rootLineToPath starts searching', array('rootline size' => count($rl)));
