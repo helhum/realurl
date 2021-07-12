@@ -54,7 +54,7 @@ class DataHandlerHook implements SingletonInterface
     protected function clearAutoConfiguration($tableName)
     {
         if ($tableName === 'sys_domain') {
-            @unlink(PATH_site . TX_REALURL_AUTOCONF_FILE);
+            @unlink(PATH_site . ConfigurationGenerator::AUTOCONFIGURTION_FILE);
         }
     }
 
